@@ -15,12 +15,6 @@ public class RentACarApplication {
 		SpringApplication.run(RentACarApplication.class, args);
 	}
 
-//	@Bean
-//	public Docket api() {
-//		return new Docket(DocumentationType.SWAGGER_2)
-//				.select()
-//				.apis(RequestHandlerSelectors.basePackage("com.kodlamaio.rentACar"))
-//				.build();
-//	}
 
-}
+
+} 
