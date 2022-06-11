@@ -5,10 +5,10 @@ import java.util.List;
 import com.kodlamaio.rentACar.business.requests.maintenances.CreateMaintenanceRequest;
 import com.kodlamaio.rentACar.business.requests.maintenances.DeleteMaintenanceRequest;
 import com.kodlamaio.rentACar.business.requests.maintenances.UpdateMaintenanceRequest;
-import com.kodlamaio.rentACar.business.responses.maintenances.ReadMaintenanceResponse;
+import com.kodlamaio.rentACar.business.responses.maintenances.GetAllMaintenancesResponse;
+import com.kodlamaio.rentACar.business.responses.maintenances.GetMaintenanceResponse;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
-import com.kodlamaio.rentACar.entities.concretes.Maintenance;
 
 public interface MaintenanceService {
 
@@ -16,6 +16,7 @@ public interface MaintenanceService {
 	Result update(UpdateMaintenanceRequest updateMaintenanceRequest);
 	Result updateState(UpdateMaintenanceRequest updateMaintenanceRequest);
 	Result delete (DeleteMaintenanceRequest deleteMaintenanceRequest);
-	DataResult<List<Maintenance>> getAll();
-	DataResult<Maintenance> getById(ReadMaintenanceResponse readMaintenanceResponce);
+	DataResult<List<GetAllMaintenancesResponse>> getAll();
+	DataResult<GetMaintenanceResponse> getById(int id);
+	
 }

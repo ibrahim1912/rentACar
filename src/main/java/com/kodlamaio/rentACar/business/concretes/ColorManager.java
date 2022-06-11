@@ -1,6 +1,7 @@
 package com.kodlamaio.rentACar.business.concretes;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,7 +10,9 @@ import com.kodlamaio.rentACar.business.abstracts.ColorService;
 import com.kodlamaio.rentACar.business.requests.colors.CreateColorRequest;
 import com.kodlamaio.rentACar.business.requests.colors.DeleteColorRequest;
 import com.kodlamaio.rentACar.business.requests.colors.UpdateColorRequest;
-import com.kodlamaio.rentACar.business.responses.colors.ReadColorResponse;
+import com.kodlamaio.rentACar.business.responses.colors.GetAllColorsResponse;
+import com.kodlamaio.rentACar.business.responses.colors.GetColorResponse;
+import com.kodlamaio.rentACar.core.utilities.mapping.ModelMapperService;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
 import com.kodlamaio.rentACar.core.utilities.results.SuccessDataResult;
@@ -22,15 +25,16 @@ import com.kodlamaio.rentACar.entities.concretes.Color;
 public class ColorManager implements ColorService{
 
 	private ColorRepository colorRepository;
+	private ModelMapperService modelMapperService;
 	@Autowired
-	public ColorManager(ColorRepository colorRepository) {
+	public ColorManager(ColorRepository colorRepository,ModelMapperService modelMapperService) {
 		this.colorRepository = colorRepository;
+		this.modelMapperService = modelMapperService;
 	}
 
 	@Override
 	public Result add(CreateColorRequest createColorRequest) {
-		Color color = new Color();
-		color.setName(createColorRequest.getName());
+		Color color = this.modelMapperService.forRequest().map(createColorRequest, Color.class);
 		this.colorRepository.save(color);
 		return new SuccessResult("COLOR.ADDED");
 		
@@ -45,21 +49,24 @@ public class ColorManager implements ColorService{
 
 	@Override
 	public Result update(UpdateColorRequest updateColorRequest) {
-		Color color = new Color();
-		color.setName(updateColorRequest.getName());
+		Color color = this.modelMapperService.forRequest().map(updateColorRequest,Color.class);
 		this.colorRepository.save(color);
 		return new SuccessResult("COLOR.UPDATED");
 		
 	}
 
 	@Override
-	public DataResult<List<Color>> getAll() {
-		return new SuccessDataResult<List<Color>>(this.colorRepository.findAll(),"COLOR.LISTED");
+	public DataResult<List<GetAllColorsResponse>> getAll() {
+		List<Color> colors = this.colorRepository.findAll();
+		List<GetAllColorsResponse> response = colors.stream().map(color->this.modelMapperService.forResponse().map(color, GetAllColorsResponse.class)).collect(Collectors.toList());
+		return new SuccessDataResult<List<GetAllColorsResponse>>(response,"COLOR.LISTED");
 	}
 
 	@Override
-	public DataResult<Color> getById(ReadColorResponse readColorResponse) {
-		return new SuccessDataResult<Color>(this.colorRepository.findById(readColorResponse.getId()));
+	public DataResult<GetColorResponse> getById(int id) {
+		Color color = colorRepository.findById(id);
+		GetColorResponse response = this.modelMapperService.forResponse().map(color,GetColorResponse.class);
+		return new SuccessDataResult<GetColorResponse>(response,"COLOR.LISTED");
 	}
 
 }

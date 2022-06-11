@@ -10,33 +10,28 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
+@Table(name = "cities") // Sehir Tablosu
+public class City {
 
-@Table(name="colors")
-public class Color {
-
-	@Id()
+	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="id")
+	
+	@Column(name="id") //Şehrin id si
 	private int id;
 	
-	@Column(name="name")
+	@Column(name="name") // Şehrin ismi
 	private String name;
+
+	@OneToMany(mappedBy = "city") // Bir şehrin bir çok arabası olabililr
+	private List<Car> cars;
 	
-	@OneToMany(mappedBy = "color")
-	List<Car> cars;
+	
 }
-
-
-//listeme id ye göre listemle
-//insert update delete 
-//getbyid 1 numaralı id yi ver bmw gelcek

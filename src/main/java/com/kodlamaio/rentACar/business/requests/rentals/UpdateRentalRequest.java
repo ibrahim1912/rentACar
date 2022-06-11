@@ -10,11 +10,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateRentalRequest {
+public class UpdateRentalRequest {
 
 	private int id;
 	private int carId;
-	private Date pickUpDate;
 	private Date returnDate;
-	
 }

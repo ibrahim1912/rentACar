@@ -1,4 +1,4 @@
-package com.kodlamaio.rentACar.business.requests.rentals;
+package com.kodlamaio.rentACar.business.responses.rentals;
 
 
 import java.util.Date;
@@ -10,11 +10,15 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateRentalRequest {
+public class GetAllRentalsResponse {
 
 	private int id;
-	private int carId;
 	private Date pickUpDate;
 	private Date returnDate;
-	
+	private int totalDays;
+	private double totalPrice;
+	private String brandName;
+	private String colorName;
+	private int carId;
+
 }

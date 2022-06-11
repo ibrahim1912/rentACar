@@ -1,5 +1,6 @@
 package com.kodlamaio.rentACar.entities.concretes;
 
+
 import java.util.Date;
 
 import javax.persistence.Column;

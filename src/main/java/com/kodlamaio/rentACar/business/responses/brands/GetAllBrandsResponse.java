@@ -1,0 +1,14 @@
+package com.kodlamaio.rentACar.business.responses.brands;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class GetAllBrandsResponse {
+
+	private int id; //id listelenır
+	private String name; //isim listelenır
+}

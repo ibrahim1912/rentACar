@@ -7,7 +7,14 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReadCarResponse {
 
+public class GetAllCarsResponse {
 	private int id;
+	private double dailyPrice;
+	private String description;
+	private String brandName;
+	private String colorName;
+	private int kilometer;
+	private String state;
+	
 }

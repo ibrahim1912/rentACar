@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "cars")// Arabaların tablosu
-@JsonIgnoreProperties({"hibernateLazyInitializer","handler","maintenances","rentals"})
+//@JsonIgnoreProperties({"hibernateLazyInitializer","handler","maintenances","rentals"})
 
 public class Car {
 	
@@ -65,6 +65,12 @@ public class Car {
 	
 	@OneToMany(mappedBy = "car") // Bir araba bir çok kez kiralanabilir
 	private List<Rental> rentals;
+	
+	@ManyToOne //Bir şehirde birden fazla araba olabilir
+	@JoinColumn(name="city_id")
+	private City city;
+	
+
 	
 	
 	
