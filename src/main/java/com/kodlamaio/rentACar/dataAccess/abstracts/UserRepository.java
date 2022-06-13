@@ -7,4 +7,6 @@ import com.kodlamaio.rentACar.entities.concretes.User;
 public interface UserRepository  extends JpaRepository<User,Integer>{
 
 	User findById(int id);
+	User findByIdentityNumber(String identityNumber);
+	User findByEmail(String email);
 }

@@ -23,20 +23,20 @@ public class User {
 	@Column(name="id")
 	private int id;
 	
-	@Column(name="identity_number",unique=true)
+	@Column(name="identity_number")
 	private String identityNumber;
 	
-	@Column(name="email",unique=true)
+	@Column(name="email")
 	private String email;
 	
 	@Column(name="password")
 	private String password;
 	
 	@Column(name="first_name")
-	private String FirstName;
+	private String firstName;
 	
 	@Column(name="last_name")
-	private String LastName;
+	private String lastName;
 	
 
 }

@@ -13,7 +13,11 @@ import org.springframework.stereotype.Service;
 
 import com.kodlamaio.rentACar.business.abstracts.UserService;
 import com.kodlamaio.rentACar.business.requests.users.CreateUserRequest;
+import com.kodlamaio.rentACar.business.requests.users.DeleteUserRequest;
+import com.kodlamaio.rentACar.business.requests.users.UpdateUserRequest;
 import com.kodlamaio.rentACar.business.responses.users.GetAllUsersResponse;
+import com.kodlamaio.rentACar.business.responses.users.GetUserResponse;
+import com.kodlamaio.rentACar.core.utilities.exceptions.BusinessException;
 import com.kodlamaio.rentACar.core.utilities.mapping.ModelMapperService;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
@@ -31,7 +35,10 @@ public class UserManager implements UserService {
 
 	@Override
 	public Result add(CreateUserRequest createUserRequest) {
+		checkIfIdentityIsSame(createUserRequest.getIdentityNumber());
+		checkIfEmailIsSame(createUserRequest.getEmail());
 		User user = this.modelMapperService.forRequest().map(createUserRequest, User.class);
+		
 		this.userRepository.save(user);
 		return new SuccessResult("USER.ADDED");
 
@@ -50,6 +57,7 @@ public class UserManager implements UserService {
 	@Override
 	public DataResult<List<GetAllUsersResponse>> getAll(Integer pageNo, Integer pageSize) {
 		Pageable pageable =  PageRequest.of(pageNo-1,pageSize);
+		
 		List<User> users = this.userRepository.findAll(pageable).getContent();
 		List<GetAllUsersResponse> response = users.stream()
 				.map(user -> this.modelMapperService.forResponse().map(user, GetAllUsersResponse.class))
@@ -57,4 +65,40 @@ public class UserManager implements UserService {
 		return new SuccessDataResult<List<GetAllUsersResponse>>(response);
 	}
 
+	private void checkIfIdentityIsSame(String identity) {
+		User user = this.userRepository.findByIdentityNumber(identity);
+		if(user != null) {
+			throw new BusinessException("USER.EXIST");
+		}
+	}
+	
+	private void checkIfEmailIsSame(String email) {
+		User user = this.userRepository.findByEmail(email);
+		if(user != null) {
+			throw new BusinessException("EMAIL.EXIST");
+		}
+	}
+
+	@Override
+	public Result delete(DeleteUserRequest deleteUserRequest) {
+		this.userRepository.deleteById(deleteUserRequest.getId());
+		return new SuccessResult("USER.DELETED");
+	}
+
+	@Override
+	public Result update(UpdateUserRequest updateUserRequest) {
+		checkIfEmailIsSame(updateUserRequest.getEmail());
+		User user = this.modelMapperService.forRequest().map(updateUserRequest, User.class);
+		User userFromDb =this.userRepository.findById(user.getId());
+		user.setIdentityNumber(userFromDb.getIdentityNumber());
+		this.userRepository.save(user);
+		return new SuccessResult("USER.UPDATED");
+	}
+
+	@Override
+	public DataResult<GetUserResponse> getById(int id) {
+		User user = this.userRepository.findById(id);
+		GetUserResponse response = this.modelMapperService.forResponse().map(user, GetUserResponse.class);
+		return new SuccessDataResult<GetUserResponse>(response);
+	}
 }
