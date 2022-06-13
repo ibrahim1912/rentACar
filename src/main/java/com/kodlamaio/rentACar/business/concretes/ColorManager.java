@@ -12,6 +12,7 @@ import com.kodlamaio.rentACar.business.requests.colors.DeleteColorRequest;
 import com.kodlamaio.rentACar.business.requests.colors.UpdateColorRequest;
 import com.kodlamaio.rentACar.business.responses.colors.GetAllColorsResponse;
 import com.kodlamaio.rentACar.business.responses.colors.GetColorResponse;
+import com.kodlamaio.rentACar.core.utilities.exceptions.BusinessException;
 import com.kodlamaio.rentACar.core.utilities.mapping.ModelMapperService;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
@@ -34,11 +35,10 @@ public class ColorManager implements ColorService{
 
 	@Override
 	public Result add(CreateColorRequest createColorRequest) {
+		checkIfColorExistsByName(createColorRequest.getName());
 		Color color = this.modelMapperService.forRequest().map(createColorRequest, Color.class);
 		this.colorRepository.save(color);
-		return new SuccessResult("COLOR.ADDED");
-		
-		
+		return new SuccessResult("COLOR.ADDED");		
 	}
 
 	@Override
@@ -49,6 +49,7 @@ public class ColorManager implements ColorService{
 
 	@Override
 	public Result update(UpdateColorRequest updateColorRequest) {
+		checkIfColorExistsByName(updateColorRequest.getName());
 		Color color = this.modelMapperService.forRequest().map(updateColorRequest,Color.class);
 		this.colorRepository.save(color);
 		return new SuccessResult("COLOR.UPDATED");
@@ -67,6 +68,13 @@ public class ColorManager implements ColorService{
 		Color color = colorRepository.findById(id);
 		GetColorResponse response = this.modelMapperService.forResponse().map(color,GetColorResponse.class);
 		return new SuccessDataResult<GetColorResponse>(response,"COLOR.LISTED");
+	}
+	
+	private void checkIfColorExistsByName(String name) {
+		Color currentColor = this.colorRepository.findByName(name);
+		if(currentColor != null) {
+			throw new BusinessException("COLOR.EXISTS");
+		}
 	}
 
 }

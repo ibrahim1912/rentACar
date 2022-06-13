@@ -9,5 +9,5 @@ public interface BrandRepository extends JpaRepository<Brand,Integer> {
 	
 	Brand findById(int id);
 	
-	
+	Brand findByName(String name);
 }

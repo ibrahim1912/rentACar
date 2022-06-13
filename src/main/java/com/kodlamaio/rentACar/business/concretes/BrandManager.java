@@ -12,6 +12,7 @@ import com.kodlamaio.rentACar.business.requests.brands.DeleteBrandRequest;
 import com.kodlamaio.rentACar.business.requests.brands.UpdateBrandRequest;
 import com.kodlamaio.rentACar.business.responses.brands.GetAllBrandsResponse;
 import com.kodlamaio.rentACar.business.responses.brands.GetBrandResponse;
+import com.kodlamaio.rentACar.core.utilities.exceptions.BusinessException;
 import com.kodlamaio.rentACar.core.utilities.mapping.ModelMapperService;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
@@ -38,6 +39,7 @@ public class BrandManager implements BrandService {
 		// iş kuralları
 		//Brand brand = new Brand();
 		//brand.setName(createBrandRequest.getName()); // gelen requesti veritabanı nesnesine çevirdim mapledik
+		checkIfBrandExistsByName(createBrandRequest.getName()); //burdan geçerse devam ediyor geçmesse hata fırlatır
 		Brand brand = this.modelMapperService.forRequest().map(createBrandRequest, Brand.class);
 		this.brandRepository.save(brand);
 		return new SuccessResult("BRAND.ADDED");
@@ -69,10 +71,18 @@ public class BrandManager implements BrandService {
 	public Result update(UpdateBrandRequest updateBrandRequest) {
 		//Brand brand = brandRepository.findById(updateBrandRequest.getId());
 		//brand.setName(updateBrandRequest.getName());
+		checkIfBrandExistsByName(updateBrandRequest.getName());
 		Brand brand = this.modelMapperService.forRequest().map(updateBrandRequest,Brand.class);
 		this.brandRepository.save(brand);
 		return new SuccessResult("BRAND.UPDATE");
 
+	}
+	
+	private void checkIfBrandExistsByName(String name) {
+		Brand currentBrand = this.brandRepository.findByName(name);
+		if(currentBrand != null) {
+			throw new BusinessException("BRAND.EXISTS");
+		}
 	}
 	
 }

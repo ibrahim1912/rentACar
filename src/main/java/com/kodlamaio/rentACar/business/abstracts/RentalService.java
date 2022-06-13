@@ -10,6 +10,7 @@ import com.kodlamaio.rentACar.business.responses.rentals.GetAllRentalsResponse;
 import com.kodlamaio.rentACar.business.responses.rentals.GetRentalResponse;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
+import com.kodlamaio.rentACar.entities.concretes.Rental;
 
 
 public interface RentalService {
@@ -20,4 +21,6 @@ public interface RentalService {
 	
 	DataResult<List<GetAllRentalsResponse>> getAll();
 	DataResult<GetRentalResponse> getById(int id);
+	
+	
 }

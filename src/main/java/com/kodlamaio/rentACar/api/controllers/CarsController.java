@@ -1,6 +1,9 @@
 package com.kodlamaio.rentACar.api.controllers;
 
 import java.util.List;
+
+import javax.validation.Valid;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,8 +18,7 @@ import com.kodlamaio.rentACar.business.responses.cars.GetAllCarsResponse;
 import com.kodlamaio.rentACar.business.responses.cars.GetCarResponse;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
-import com.kodlamaio.rentACar.entities.concretes.Brand;
-import com.kodlamaio.rentACar.entities.concretes.Car;
+
 
 
 @RestController
@@ -31,7 +33,7 @@ public class CarsController {
 	}
 	
 	@PostMapping("/add")
-	public Result add(@RequestBody CreateCarRequest createCarRequest) {
+	public Result add(@RequestBody @Valid CreateCarRequest createCarRequest) {
 		return this.carService.add(createCarRequest);
 	}
 	

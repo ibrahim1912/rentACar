@@ -10,4 +10,6 @@ public interface CarRepository extends JpaRepository<Car, Integer> {
 	
 	Car findById(int id);
 	List<Car> getByBrandId(int brandId);
+	
+	
 }

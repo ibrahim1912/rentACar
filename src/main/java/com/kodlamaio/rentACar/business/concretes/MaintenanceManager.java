@@ -10,6 +10,7 @@ import com.kodlamaio.rentACar.business.requests.maintenances.DeleteMaintenanceRe
 import com.kodlamaio.rentACar.business.requests.maintenances.UpdateMaintenanceRequest;
 import com.kodlamaio.rentACar.business.responses.maintenances.GetAllMaintenancesResponse;
 import com.kodlamaio.rentACar.business.responses.maintenances.GetMaintenanceResponse;
+import com.kodlamaio.rentACar.core.utilities.exceptions.BusinessException;
 import com.kodlamaio.rentACar.core.utilities.mapping.ModelMapperService;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.ErrorResult;
@@ -39,7 +40,7 @@ public class MaintenanceManager implements MaintenanceService {
 
 	@Override
 	public Result add(CreateMaintenanceRequest createMaintenanceRequest) {
-		if (checkIfCarState(createMaintenanceRequest.getCarId())) {
+		checkIfCarState(createMaintenanceRequest.getCarId());
 			Maintenance maintenance = this.modelMapperService.forResponse().map(createMaintenanceRequest,
 					Maintenance.class);
 
@@ -50,8 +51,7 @@ public class MaintenanceManager implements MaintenanceService {
 
 			this.maintenanceRepository.save(maintenance);
 			return new SuccessResult("CAR.IS.IN.MAINTENANCE");
-		}
-		return new ErrorResult("CAR.IS.NOT.IN.MAINTENANCE");
+		
 
 	}
 
@@ -101,12 +101,12 @@ public class MaintenanceManager implements MaintenanceService {
 		return new SuccessResult();
 	}
 
-	private boolean checkIfCarState(int id) {
+	private void checkIfCarState(int id) {
 		Car car = this.carRepository.findById(id);
-		if (car.getState() == 1) {
-			return true;
+		if (car.getState() != 1) {
+			throw new BusinessException("CAR.IS.MAINTENANCED.OR.RENTED");
 		}
-		return false;
+		
 
 	}
 }

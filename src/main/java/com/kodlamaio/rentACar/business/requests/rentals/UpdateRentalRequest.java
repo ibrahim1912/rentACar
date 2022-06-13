@@ -1,6 +1,7 @@
 package com.kodlamaio.rentACar.business.requests.rentals;
 
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import lombok.AllArgsConstructor;
@@ -14,5 +15,6 @@ public class UpdateRentalRequest {
 
 	private int id;
 	private int carId;
-	private Date returnDate;
+	private LocalDate returnDate;
+	private int returnCityId;
 }
