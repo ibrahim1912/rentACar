@@ -33,5 +33,9 @@ public class City {
 	@OneToMany(mappedBy = "city") // Bir şehrin bir çok arabası olabililr
 	private List<Car> cars;
 	
+	@OneToMany(mappedBy = "pickUpCityId")
+	private List<Rental> pickUpCityRentals;
 	
+	@OneToMany(mappedBy = "returnCityId")
+	private List<Rental> rentalCityRentals;
 }
