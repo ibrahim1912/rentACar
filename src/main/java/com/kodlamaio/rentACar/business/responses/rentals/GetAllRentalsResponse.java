@@ -1,6 +1,7 @@
 package com.kodlamaio.rentACar.business.responses.rentals;
 
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import lombok.AllArgsConstructor;
@@ -13,12 +14,17 @@ import lombok.NoArgsConstructor;
 public class GetAllRentalsResponse {
 
 	private int id;
-	private Date pickUpDate;
-	private Date returnDate;
+	private LocalDate pickUpDate;
+	private LocalDate returnDate;
 	private int totalDays;
 	private double totalPrice;
 	private String brandName;
 	private String colorName;
 	private int carId;
+	private String cityName;
+	private int pickUpCityId;
+	private int returnCityId;
+
+	
 
 }

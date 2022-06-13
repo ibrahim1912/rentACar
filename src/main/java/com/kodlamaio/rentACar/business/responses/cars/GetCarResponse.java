@@ -15,6 +15,8 @@ public class GetCarResponse {
 	private String colorName;
 	private int kilometer;
 	private String state;
+	private int cityId;
+	private String cityName;
 
 	
 }
