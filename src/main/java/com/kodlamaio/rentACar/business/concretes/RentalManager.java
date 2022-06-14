@@ -66,9 +66,9 @@ public class RentalManager implements RentalService {
 		Rental rental = this.modelMapperService.forRequest().map(createRentalRequest, Rental.class);
 		Car car = this.carRepository.findById(createRentalRequest.getCarId());
 		car.setState(3);
-		rental.setPickUpCityId(car.getCity());
+		//rental.setPickUpCityId(car.getCity());
 		rental.setTotalPrice(calculateTotalPriceOfRental(rental, car.getDailyPrice()));
-		rental.setPickUpCityId(car.getCity());
+		//rental.setPickUpCityId(car.getCity());
 		car.setCity(rental.getReturnCityId());
 		this.rentalRepository.save(rental);
 		return new SuccessResult("CAR.RENTED");
@@ -93,20 +93,20 @@ public class RentalManager implements RentalService {
 
 	@Override
 	public Result update(UpdateRentalRequest updateRentalRequest) {
-//		Rental rental = this.rentalRepository.findById(updateRentalRequest.getId());
-//		Car car = this.carRepository.findById(updateRentalRequest.getCarId());
-//
-//		rental.setReturnDate(updateRentalRequest.getReturnDate());
-//		long dayDifference = (rental.getReturnDate().getTime() - rental.getPickUpDate().getTime());
-//		long time = TimeUnit.DAYS.convert(dayDifference, TimeUnit.MILLISECONDS);
-//		rental.setTotalDays((int) time);
-//		double totalPrice = car.getDailyPrice() * time;
-//		
-//		
-//		rental.setTotalPrice(totalPrice);
-//		car.setCity(rental.getReturnCityId());
-//		this.rentalRepository.save(rental);
-//		return new SuccessResult("RENTED.UPDATED");
+		checkIfIdExists(updateRentalRequest.getId());
+
+		Rental rental = this.rentalRepository.findById(updateRentalRequest.getId());
+		Rental rentalMapped = this.modelMapperService.forRequest().map(updateRentalRequest, Rental.class);
+		Car car = this.carRepository.findById(updateRentalRequest.getCarId());
+		
+		rental.setReturnDate(updateRentalRequest.getReturnDate());
+		
+		rental.setReturnCityId(rentalMapped.getReturnCityId());
+		car.setCity(rentalMapped.getReturnCityId());
+		
+		rental.setTotalPrice(calculateTotalPriceOfRental(rental, car.getDailyPrice()));
+		
+		this.rentalRepository.save(rental);
 		return new SuccessResult("RENTED.UPDATED");
 	}
 
@@ -132,13 +132,6 @@ public class RentalManager implements RentalService {
 	private double calculateTotalPriceOfRental(Rental rental, double carDailyPrice) {
 		double totalPrice = 0;
 		int daysDifference = (int) ChronoUnit.DAYS.between(rental.getPickUpDate(), rental.getReturnDate());
-//		List<AdditionalFeatureService> additionalFeatureServices = this.additionalFeatureServiceRepository.getByRentalId(rental.getId());
-//		double totalAdditionalFeatureServicePrice = 0;
-//		
-//		for (AdditionalFeatureService additionalFeatureService : additionalFeatureServices) {
-//			totalAdditionalFeatureServicePrice += additionalFeatureService.getAdditionalFeatureItem().getPrice();
-//		}
-		
 		totalPrice = (carDailyPrice * daysDifference) +  
 				+ calculatePriceByReturnLocation(rental.getPickUpCityId().getId(), rental.getReturnCityId().getId());
 		rental.setTotalDays(daysDifference);
@@ -152,5 +145,14 @@ public class RentalManager implements RentalService {
 		}
 		return additionalPrice;
 	}
+	
+	private void checkIfIdExists(int id) {
+		Rental rental = this.rentalRepository.findById(id);
+		if(rental == null) {
+			throw new BusinessException("THERE.IS.NO.RENTED.CAR");
+		}
+	}
 
 }
+
+

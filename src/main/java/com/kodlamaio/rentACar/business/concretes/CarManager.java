@@ -20,6 +20,7 @@ import com.kodlamaio.rentACar.core.utilities.results.SuccessDataResult;
 import com.kodlamaio.rentACar.core.utilities.results.SuccessResult;
 import com.kodlamaio.rentACar.dataAccess.abstracts.CarRepository;
 import com.kodlamaio.rentACar.entities.concretes.Car;
+import com.kodlamaio.rentACar.entities.concretes.Rental;
 
 @Service
 public class CarManager implements CarService {
@@ -67,20 +68,10 @@ public class CarManager implements CarService {
 
 	@Override
 	public Result update(UpdateCarRequest updateCarRequest) {
+		checkIfIdExists(updateCarRequest.getId());
 		Car car = this.modelMapperService.forRequest().map(updateCarRequest, Car.class);
-//		Car car = carRepository.findById(updateCarRequest.getId());
-//		car.setDailyPrice(updateCarRequest.getDailyPrice());
-//		car.setDescription(updateCarRequest.getDescription());
-//
-//		Brand brand = new Brand();
-//		brand.setId(updateCarRequest.getBrandId());
-//		//brand.setName(updateCarRequest.getBrandName());
-//		car.setBrand(brand);
-//
-//		Color color = new Color();
-//		color.setId(updateCarRequest.getColorId());
-//		//color.setName(updateCarRequest.getColorName());
-//		car.setColor(color);
+		Car carFromDb = this.carRepository.findById(car.getId());
+		
 		car.setState(1);
 		this.carRepository.save(car);
 		return new SuccessResult("CAR.UPDATED");
@@ -91,6 +82,13 @@ public class CarManager implements CarService {
 		List<Car> result = carRepository.getByBrandId(id);
 		if (result.size() > 5) {
 			throw new BusinessException("NO.MORE.BRANDS.CAN.BE.ADDED");
+		}
+	}
+	
+	private void checkIfIdExists(int id) {
+		Car car = this.carRepository.findById(id);
+		if(car == null) {
+			throw new BusinessException("THERE.IS.NO.CAR");
 		}
 	}
 	

@@ -13,6 +13,7 @@ import com.kodlamaio.rentACar.business.requests.additionalFeatureServices.Delete
 import com.kodlamaio.rentACar.business.requests.additionalFeatureServices.UpdateAdditionalFeatureServiceRequest;
 import com.kodlamaio.rentACar.business.responses.additionalFeatureServices.GetAdditionalFeatureServiceResponse;
 import com.kodlamaio.rentACar.business.responses.additionalFeatureServices.GetAllAdditionalFeatureServicesResponse;
+import com.kodlamaio.rentACar.core.utilities.exceptions.BusinessException;
 import com.kodlamaio.rentACar.core.utilities.mapping.ModelMapperService;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
@@ -65,16 +66,23 @@ public class AdditionalFeatureServiceManager implements AdditionalFeatureService
 
 	@Override
 	public Result update(UpdateAdditionalFeatureServiceRequest updateAdditionalFeatureServiceRequest) {
+		
 		AdditionalFeatureService additionalFeatureService = this.modelMapperService.forRequest()
 				.map(updateAdditionalFeatureServiceRequest, AdditionalFeatureService.class);
 		Rental rental = this.rentalRepository.findById(additionalFeatureService.getRental().getId());
+		
 		AdditionalFeatureItem item = this.additionalFeatureItemRepository
 				.findById(additionalFeatureService.getAdditionalFeatureItem().getId());
+		
+		checkIfRentalIdSame(additionalFeatureService,rental.getId());
+		
 		double price = item.getPrice();
 		int totalDays = rental.getTotalDays();
 		double totalPrice = totalDays * price;
 		additionalFeatureService.setTotalPrice(totalPrice);
 		additionalFeatureService.setTotalDay(totalDays);
+		
+		
 		this.additionalFeatureServiceRepository.save(additionalFeatureService);
 		return new SuccessResult("SERVICES.UPDATE");
 	}
@@ -103,6 +111,14 @@ public class AdditionalFeatureServiceManager implements AdditionalFeatureService
 		return new SuccessDataResult<GetAdditionalFeatureServiceResponse>(response);
 	}
 	
+	private void checkIfRentalIdSame(AdditionalFeatureService additionalFeatureService,int id) {
+		
+		Rental rental = this.rentalRepository.findById(id);
+		if(rental != additionalFeatureService.getRental() || rental == null) {
+			throw new BusinessException("ERROR");
+		}
+		
+	}
 	
 
 }
