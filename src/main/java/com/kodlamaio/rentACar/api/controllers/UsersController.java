@@ -1,5 +1,6 @@
 package com.kodlamaio.rentACar.api.controllers;
 
+import java.rmi.RemoteException;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -31,7 +32,7 @@ public class UsersController {
 	
 
 	@PostMapping("/add")
-	public Result add(@RequestBody @Valid CreateUserRequest createUserRequest) {
+	public Result add(@RequestBody @Valid CreateUserRequest createUserRequest) throws NumberFormatException, RemoteException {
 		return this.userService.add(createUserRequest);
 	}
 	

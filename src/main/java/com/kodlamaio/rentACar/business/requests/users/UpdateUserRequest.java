@@ -1,5 +1,7 @@
 package com.kodlamaio.rentACar.business.requests.users;
 
+import java.time.LocalDate;
+
 import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -46,4 +48,6 @@ public class UpdateUserRequest {
 	*Min 1 number.
 	*Min 8 characters.**/
 	private String password;
+	
+	private LocalDate birthDate;
 }

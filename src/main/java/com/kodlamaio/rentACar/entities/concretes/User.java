@@ -1,5 +1,7 @@
 package com.kodlamaio.rentACar.entities.concretes;
 
+import java.time.LocalDate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -37,6 +39,9 @@ public class User {
 	
 	@Column(name="last_name")
 	private String lastName;
+	
+	@Column(name="birth_date")
+	private LocalDate birthDate;
 	
 
 }

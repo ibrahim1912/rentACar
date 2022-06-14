@@ -1,6 +1,7 @@
 package com.kodlamaio.rentACar.business.concretes;
 
 
+import java.rmi.RemoteException;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +18,7 @@ import com.kodlamaio.rentACar.business.requests.users.DeleteUserRequest;
 import com.kodlamaio.rentACar.business.requests.users.UpdateUserRequest;
 import com.kodlamaio.rentACar.business.responses.users.GetAllUsersResponse;
 import com.kodlamaio.rentACar.business.responses.users.GetUserResponse;
+import com.kodlamaio.rentACar.core.adapters.UserValidationService;
 import com.kodlamaio.rentACar.core.utilities.exceptions.BusinessException;
 import com.kodlamaio.rentACar.core.utilities.mapping.ModelMapperService;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
@@ -32,13 +34,16 @@ public class UserManager implements UserService {
 	private UserRepository userRepository;
 	@Autowired
 	private ModelMapperService modelMapperService;
-
+	@Autowired
+	private UserValidationService userValidationService;
+	
 	@Override
-	public Result add(CreateUserRequest createUserRequest) {
+	public Result add(CreateUserRequest createUserRequest) throws NumberFormatException, RemoteException {
+		checkIfRealPerson(createUserRequest);
 		checkIfIdentityIsSame(createUserRequest.getIdentityNumber());
 		checkIfEmailIsSame(createUserRequest.getEmail());
-		User user = this.modelMapperService.forRequest().map(createUserRequest, User.class);
 		
+		User user = this.modelMapperService.forRequest().map(createUserRequest, User.class);
 		this.userRepository.save(user);
 		return new SuccessResult("USER.ADDED");
 
@@ -72,13 +77,6 @@ public class UserManager implements UserService {
 		}
 	}
 	
-	private void checkIfEmailIsSame(String email) {
-		User user = this.userRepository.findByEmail(email);
-		if(user != null) {
-			throw new BusinessException("EMAIL.EXIST");
-		}
-	}
-
 	@Override
 	public Result delete(DeleteUserRequest deleteUserRequest) {
 		this.userRepository.deleteById(deleteUserRequest.getId());
@@ -100,5 +98,18 @@ public class UserManager implements UserService {
 		User user = this.userRepository.findById(id);
 		GetUserResponse response = this.modelMapperService.forResponse().map(user, GetUserResponse.class);
 		return new SuccessDataResult<GetUserResponse>(response);
+	}
+	
+	private void checkIfRealPerson(CreateUserRequest user) throws NumberFormatException, RemoteException {
+		if(!userValidationService.checkIfRealPerson(user)) {
+			throw new BusinessException("USER.VALIDATION.ERROR");
+		}
+	}
+	
+	private void checkIfEmailIsSame(String email) {
+		User user = this.userRepository.findByEmail(email);
+		if(user != null) {
+			throw new BusinessException("EMAIL.EXIST");
+		}
 	}
 }

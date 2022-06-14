@@ -17,6 +17,7 @@ public class GetCarResponse {
 	private String state;
 	private int cityId;
 	private String cityName;
+	private String plate;
 
 	
 }
