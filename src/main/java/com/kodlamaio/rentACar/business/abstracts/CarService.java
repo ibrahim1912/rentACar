@@ -20,6 +20,18 @@ public interface CarService {
 	
 	DataResult<List<GetAllCarsResponse>> getAll();
 	DataResult<GetCarResponse> getById(int id);
+	DataResult<List<GetAllCarsResponse>> getAllSorted();
+	DataResult<List<GetAllCarsResponse>> getAllSorted2(String cityName);
 	
 	
+	
+	DataResult<List<GetAllCarsResponse>> getAllSortedByFindeksNumber();
+	DataResult<List<GetAllCarsResponse>> getAllSortedByFindeksNumberAndKilometer();
+	DataResult<List<GetAllCarsResponse>> getByState(int state);
+	DataResult<List<GetAllCarsResponse>> getByCityName(String cityName);
+	DataResult<List<GetAllCarsResponse>> getByBrandAndColorName(String brandName,String colorName);
+	DataResult<List<GetAllCarsResponse>> getDailyPriceGreaterThan(double dailyPrice);
+	
+	
+	DataResult<List<GetAllCarsResponse>> getff();
 }

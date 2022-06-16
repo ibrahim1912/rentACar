@@ -25,4 +25,5 @@ public class UpdateCarRequest {
 	private int brandId;
 	private int colorId; 
 	private int kilometer;
+	private int minFindeksScore;
 }

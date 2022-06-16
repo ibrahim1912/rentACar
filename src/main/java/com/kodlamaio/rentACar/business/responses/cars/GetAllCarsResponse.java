@@ -15,8 +15,9 @@ public class GetAllCarsResponse {
 	private String brandName;
 	private String colorName;
 	private int kilometer;
-	private String state;
+	private int state;
 	private String cityName;
 	private int cityId;
+	private int minFindeksScore;
 	
 }

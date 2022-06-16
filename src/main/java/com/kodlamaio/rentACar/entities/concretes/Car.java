@@ -52,6 +52,9 @@ public class Car {
 	@Column(name="state") //1 Available 2 Maintenance 3 Rent
 	private int state;
 	
+	@Column(name="min_findeks_score")
+	private int minFindeksScore;
+	
 	@ManyToOne
 	@JoinColumn(name = "brand_id") // id ye göre brand tablosu  // db ye id koyar
 	private Brand brand;

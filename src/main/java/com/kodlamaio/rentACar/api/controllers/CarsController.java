@@ -48,13 +48,61 @@ public class CarsController {
 	}
 	
 	@GetMapping("/getall")
-	public DataResult<List<GetAllCarsResponse>> getall() {
+	public DataResult<List<GetAllCarsResponse>> getAll() {
 		return this.carService.getAll();
+	}
+	
+	@GetMapping("/getallsorted")
+	public DataResult<List<GetAllCarsResponse>> getAllSorted() {
+		return this.carService.getAllSorted();
+	}
+	
+	@GetMapping("/getallsorted2")
+	public DataResult<List<GetAllCarsResponse>> getAllSorted2(@RequestParam String cityname) {
+		return this.carService.getAllSorted2(cityname);
 	}
 	
 	@GetMapping("/getbyid") 
 	public DataResult<GetCarResponse> getById(@RequestParam int id) {
 		return this.carService.getById(id);
 	}
+	
+	
+	//********************************************************************************************//
+	@GetMapping("/getbystate") 
+	public DataResult<List<GetAllCarsResponse>> getByState(@RequestParam int state) {
+		return this.carService.getByState(state);
+	}
+	
+	@GetMapping("/getbycityname")
+	public DataResult<List<GetAllCarsResponse>> getByCityName(@RequestParam String cityname) {
+		return this.carService.getByCityName(cityname);
+	}
+	
+	@GetMapping("/getbybrandandcolorname")
+	public DataResult<List<GetAllCarsResponse>> getByBrandAndColorName(String brandName,String colorName) {
+		return this.carService.getByBrandAndColorName(brandName,colorName);
+	}
+	
+	@GetMapping("/getallsortedbyfindeksnumber")
+	public DataResult<List<GetAllCarsResponse>> getAllSortedByFindeksNumber() {
+		return this.carService.getAllSortedByFindeksNumber();
+	}
+	
+	@GetMapping("/getallsortedbyfindeksnumberandkilometer")
+	public DataResult<List<GetAllCarsResponse>> getAllSortedByFindeksNumberAndKilometer() {
+		return this.carService.getAllSortedByFindeksNumberAndKilometer();
+	}
+	
+	@GetMapping("/getdailypricegreaterthan")
+	public DataResult<List<GetAllCarsResponse>> getDailyPriceGreaterThan(double dailyPrice) {
+		return this.carService.getDailyPriceGreaterThan(dailyPrice);
+	}
+	
+	@GetMapping("/getff")
+	public DataResult<List<GetAllCarsResponse>> getff() {
+		return this.carService.getff();
+	}
+
 
 }
