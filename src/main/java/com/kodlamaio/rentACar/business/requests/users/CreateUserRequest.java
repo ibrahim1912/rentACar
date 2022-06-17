@@ -53,5 +53,5 @@ public class CreateUserRequest {
 	*Min 8 characters.**/
 	private String password;
 	
-	private LocalDate birthDate;
+	private int birthDate;
 }

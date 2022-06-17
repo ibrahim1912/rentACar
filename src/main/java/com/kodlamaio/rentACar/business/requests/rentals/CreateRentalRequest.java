@@ -14,12 +14,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CreateRentalRequest {
 
-	//private int id;
+	private int id;
 	private int carId;
 	private LocalDate pickUpDate;
 	private LocalDate returnDate;
 	private int pickUpCityId;
 	private int returnCityId;
-
+	private int userId;
 	
 }

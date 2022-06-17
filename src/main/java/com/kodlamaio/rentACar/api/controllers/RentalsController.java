@@ -47,6 +47,11 @@ public class RentalsController {
 		return this.rentalService.getAll();
 	}
 	
+	@GetMapping("/getallsorted")
+	public DataResult<List<GetAllRentalsResponse>> getAll2() {
+		return this.rentalService.getAllSorted();
+	}
+	
 	@GetMapping("/getbyid")
 	public DataResult<GetRentalResponse> getById(@RequestParam int id) {
 		return this.rentalService.getById(id);

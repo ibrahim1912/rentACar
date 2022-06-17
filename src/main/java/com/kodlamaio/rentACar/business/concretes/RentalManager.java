@@ -2,6 +2,7 @@ package com.kodlamaio.rentACar.business.concretes;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -10,12 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kodlamaio.rentACar.business.abstracts.AdditionalFeatureServiceService;
+import com.kodlamaio.rentACar.business.abstracts.CarService;
 import com.kodlamaio.rentACar.business.abstracts.RentalService;
 import com.kodlamaio.rentACar.business.requests.rentals.CreateRentalRequest;
 import com.kodlamaio.rentACar.business.requests.rentals.DeleteRentalRequest;
 import com.kodlamaio.rentACar.business.requests.rentals.UpdateRentalRequest;
 import com.kodlamaio.rentACar.business.responses.rentals.GetAllRentalsResponse;
 import com.kodlamaio.rentACar.business.responses.rentals.GetRentalResponse;
+import com.kodlamaio.rentACar.core.adapters.FindeksValidationService;
 import com.kodlamaio.rentACar.core.utilities.exceptions.BusinessException;
 import com.kodlamaio.rentACar.core.utilities.mapping.ModelMapperService;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
@@ -28,9 +31,11 @@ import com.kodlamaio.rentACar.dataAccess.abstracts.AdditionalFeatureServiceRepos
 import com.kodlamaio.rentACar.dataAccess.abstracts.CarRepository;
 import com.kodlamaio.rentACar.dataAccess.abstracts.MaintenanceRepository;
 import com.kodlamaio.rentACar.dataAccess.abstracts.RentalRepository;
+import com.kodlamaio.rentACar.dataAccess.abstracts.UserRepository;
 import com.kodlamaio.rentACar.entities.concretes.AdditionalFeatureService;
 import com.kodlamaio.rentACar.entities.concretes.Car;
 import com.kodlamaio.rentACar.entities.concretes.Rental;
+import com.kodlamaio.rentACar.entities.concretes.User;
 
 @Service
 public class RentalManager implements RentalService {
@@ -47,6 +52,15 @@ public class RentalManager implements RentalService {
 
 	@Autowired
 	private AdditionalFeatureServiceService additionalFeatureServiceService;
+	
+	@Autowired
+	private UserRepository userRepository;
+	
+	@Autowired
+	private FindeksValidationService findeksValidationService;
+	
+	@Autowired
+	private CarService carService;
 
 	@Autowired
 	public RentalManager(RentalRepository rentalRepository, CarRepository carRepository,
@@ -59,12 +73,15 @@ public class RentalManager implements RentalService {
 
 	@Override
 	public Result add(CreateRentalRequest createRentalRequest) {
-
-		checkIfCarState(createRentalRequest.getCarId());
 		checkIfDatesAreCorrect(createRentalRequest.getPickUpDate(), createRentalRequest.getReturnDate());
-
-		Rental rental = this.modelMapperService.forRequest().map(createRentalRequest, Rental.class);
+		checkIfCarState(createRentalRequest.getCarId());
+		
 		Car car = this.carRepository.findById(createRentalRequest.getCarId());
+		User user = this.userRepository.findById(createRentalRequest.getUserId());
+		checkIndividualCustomerFindexScoreAndCarFindexScore(car.getId(),user.getId());
+		
+		Rental rental = this.modelMapperService.forRequest().map(createRentalRequest, Rental.class);
+		
 		car.setState(3);
 		//rental.setPickUpCityId(car.getCity());
 		rental.setTotalPrice(calculateTotalPriceOfRental(rental, car.getDailyPrice()));
@@ -82,6 +99,8 @@ public class RentalManager implements RentalService {
 				.collect(Collectors.toList());
 		return new SuccessDataResult<List<GetAllRentalsResponse>>(response, "RENTED.CARS.LISTED");
 	}
+	
+	
 
 	@Override
 	public DataResult<GetRentalResponse> getById(int id) {
@@ -151,6 +170,33 @@ public class RentalManager implements RentalService {
 		if(rental == null) {
 			throw new BusinessException("THERE.IS.NO.RENTED.CAR");
 		}
+	}
+	
+	private void checkIndividualCustomerFindexScoreAndCarFindexScore(int carId, int userId) {
+		
+		Car car = this.carRepository.findById(carId);
+		User user = this.userRepository.findById(userId);
+		int userFindexScore = this.findeksValidationService.calculateFindeksScoreOfUser(user.getIdentityNumber());
+		System.out.println("Car score "+car.getMinFindeksScore());
+		if(userFindexScore < car.getMinFindeksScore()) {
+			throw new BusinessException("FINDEKS.SCORE.IS.NOT.ENOUGH");
+		}
+		
+		
+	}
+
+	@Override
+	public DataResult<List<GetAllRentalsResponse>> getAllSorted() {
+		List<Rental> rentals = this.rentalRepository.findAll();
+		List<GetAllRentalsResponse> response = rentals.stream()
+				.map(rental -> this.modelMapperService.forResponse().map(rental, GetAllRentalsResponse.class))
+			//.sorted(Comparator.comparing(GetAllRentalsResponse::getTotalPrice).reversed())
+				//.sorted(Comparator.comparing(GetAllRentalsResponse::getTotalPrice).reversed()
+						//.thenComparing(GetAllRentalsResponse::getTotalDays).reversed())
+				.sorted((o1, o2)-> o1.getCityName().compareTo(o2.getCityName()))
+			
+				.collect(Collectors.toList());
+		return new SuccessDataResult<List<GetAllRentalsResponse>>(response, "RENTED.CARS.LISTED");
 	}
 
 }

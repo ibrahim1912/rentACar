@@ -17,7 +17,7 @@ public class MernisKpsAdapter implements UserValidationService {
 	public boolean checkIfRealPerson(CreateUserRequest user) throws NumberFormatException, RemoteException {
 		KPSPublicSoapProxy kpsPublicSoapProxy = new KPSPublicSoapProxy();
 		boolean result = kpsPublicSoapProxy.TCKimlikNoDogrula(Long.parseLong(user.getIdentityNumber()),
-				user.getFirstName().toUpperCase(), user.getLastName().toUpperCase(), user.getBirthDate().getYear());
+				user.getFirstName().toUpperCase(), user.getLastName().toUpperCase(), user.getBirthDate());
 		return result;
 	}
 

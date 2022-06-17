@@ -28,7 +28,7 @@ public class RentACarApplication {
 		SpringApplication.run(RentACarApplication.class, args);
 	}
 
-	@Bean
+	@Bean //belleğe attık
 	public ModelMapper getModelMapper() {
 		return new ModelMapper();
 	}
