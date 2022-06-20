@@ -48,7 +48,7 @@ public class RentalsController {
 	}
 	
 	@GetMapping("/getallsorted")
-	public DataResult<List<GetAllRentalsResponse>> getAll2() {
+	public DataResult<List<GetAllRentalsResponse>> getAllSorted() {
 		return this.rentalService.getAllSorted();
 	}
 	

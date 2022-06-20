@@ -16,4 +16,5 @@ public class GetAllAdditionalFeatureServicesResponse  {
 	private double additionalFeatureItemPrice;
 	private double totalPrice;
 	private int totalDay;
+	private String userFirstName;
 }

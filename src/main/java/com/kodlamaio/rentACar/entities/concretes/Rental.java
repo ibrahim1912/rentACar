@@ -63,4 +63,7 @@ public class Rental {
 	@JoinColumn(name = "user_id")
 	private User user;
 	
+	@OneToMany(mappedBy = "rental")
+	private List<Invoice> invoices;
+	
 }

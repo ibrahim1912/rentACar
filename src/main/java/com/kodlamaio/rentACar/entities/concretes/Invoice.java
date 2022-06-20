@@ -1,6 +1,6 @@
 package com.kodlamaio.rentACar.entities.concretes;
 
-import java.util.List;
+import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -20,29 +19,28 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name= "additional_feature_services")
-public class AdditionalFeatureService {
+@Table(name="invoices")
+public class Invoice {
 	
 	@Id()
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id")
 	private int id;
 	
+	@Column(name="invoice_number")
+	private int invoiceNumber;
+	
+	@Column(name="current_date")
+	private LocalDate currentDate;
+	
 	@Column(name="total_price")
 	private double totalPrice;
 	
-	@Column(name="total_day")  
-	private int totalDay;
-	
 	@ManyToOne
-	@JoinColumn(name = "rental_id") // id ye göre rental tablosu
+	@JoinColumn(name = "rentalId")
 	private Rental rental;
 	
 	@ManyToOne
-	@JoinColumn(name = "additional_feature_item_id") // id ye göre addionalFeatureItem tablosu
-	private AdditionalFeatureItem additionalFeatureItem;
-	
-	@OneToMany(mappedBy = "additionalFeatureService")
-	private List<Invoice> invoices;
-	
+	@JoinColumn(name = "additionalFeatureServiceId")
+	private AdditionalFeatureService additionalFeatureService;
 }

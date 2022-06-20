@@ -24,6 +24,7 @@ public class GetAllRentalsResponse {
 	private String cityName;
 	private int pickUpCityId;
 	private int returnCityId;
+	private String firstName;
 
 	
 
