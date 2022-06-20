@@ -18,6 +18,7 @@ public class GetCarResponse {
 	private int cityId;
 	private String cityName;
 	private String plate;
+	private double dailyPrice;
 
 	
 }

@@ -52,15 +52,6 @@ public class CarsController {
 		return this.carService.getAll();
 	}
 	
-	@GetMapping("/getallsorted")
-	public DataResult<List<GetAllCarsResponse>> getAllSorted() {
-		return this.carService.getAllSorted();
-	}
-	
-	@GetMapping("/getallsorted2")
-	public DataResult<List<GetAllCarsResponse>> getAllSorted2(@RequestParam String cityname) {
-		return this.carService.getAllSorted2(cityname);
-	}
 	
 	@GetMapping("/getbyid") 
 	public DataResult<GetCarResponse> getById(@RequestParam int id) {
@@ -99,10 +90,7 @@ public class CarsController {
 		return this.carService.getDailyPriceGreaterThan(dailyPrice);
 	}
 	
-	@GetMapping("/getff")
-	public DataResult<List<GetAllCarsResponse>> getff() {
-		return this.carService.getff();
-	}
+	
 
 
 }

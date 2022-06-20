@@ -20,10 +20,7 @@ public interface CarService {
 	
 	DataResult<List<GetAllCarsResponse>> getAll();
 	DataResult<GetCarResponse> getById(int id);
-	DataResult<List<GetAllCarsResponse>> getAllSorted();
-	DataResult<List<GetAllCarsResponse>> getAllSorted2(String cityName);
-	
-	
+
 	
 	DataResult<List<GetAllCarsResponse>> getAllSortedByFindeksNumber();
 	DataResult<List<GetAllCarsResponse>> getAllSortedByFindeksNumberAndKilometer();
@@ -33,5 +30,5 @@ public interface CarService {
 	DataResult<List<GetAllCarsResponse>> getDailyPriceGreaterThan(double dailyPrice);
 	
 	
-	DataResult<List<GetAllCarsResponse>> getff();
+	
 }
