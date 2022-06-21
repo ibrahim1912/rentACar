@@ -11,10 +11,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kodlamaio.rentACar.business.abstracts.InvoiceService;
+import com.kodlamaio.rentACar.business.requests.addresses.DeleteAddressRequest;
 import com.kodlamaio.rentACar.business.requests.invoices.CreateInvoiceRequest;
+import com.kodlamaio.rentACar.business.requests.invoices.DeleteInvoiceRequest;
 import com.kodlamaio.rentACar.business.responses.invoices.GetAllInvoicesResponse;
+import com.kodlamaio.rentACar.business.responses.invoices.GetInvoiceResponse;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
+import com.kodlamaio.rentACar.entities.concretes.AdditionalFeatureItem;
 
 @RestController
 @RequestMapping("/api/invoices")
@@ -28,14 +32,26 @@ public class InvoicesController {
 		return this.invoiceService.add(createInvoiceRequest);
 	}
 	
+	@PostMapping("/delete")
+	public Result delete(@RequestBody DeleteInvoiceRequest deleteInvoiceRequest) {
+		return this.invoiceService.delete(deleteInvoiceRequest);
+	}
+	
+	@GetMapping("/getbyid")
+	public DataResult<GetInvoiceResponse> getById(@RequestParam int id) {
+		return this.invoiceService.getById(id);
+	}
+	
+	
 	@GetMapping("/getall")
 	public DataResult<List<GetAllInvoicesResponse>> getAll() {
 		return this.invoiceService.getAll();
 	}
 	
-	@GetMapping("/getalladditionalfeatureitems")
-	public DataResult<List<String>> getAllAdditionalFeatureItems(@RequestParam int id) {
-		return this.invoiceService.getAllAdditionalFeatureItems(id);
+	
+	@GetMapping("/getalladditionalfeatureitemstest")
+	public DataResult<List<AdditionalFeatureItem>> getAllAdditionalFeatureItemsTest(@RequestParam int id) {
+		return this.invoiceService.getAllAdditionalFeatureItemsTest(id);
 	}
 	
 	

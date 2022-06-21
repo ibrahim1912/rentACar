@@ -43,6 +43,9 @@ public class Invoice {
 	@JoinColumn(name = "rentalId")
 	private Rental rental;
 	
+	@Column(name="status")
+	private int status;  // 0 invoice var -- 1 invoice iptal edilmiş
+	
 //	@ManyToOne
 //	@JoinColumn(name = "additionalFeatureServiceId")
 //	private AdditionalFeatureService additionalFeatureService;

@@ -8,4 +8,6 @@ import com.kodlamaio.rentACar.entities.concretes.AdditionalFeatureService;
 public interface AdditionalFeatureServiceRepository extends JpaRepository<AdditionalFeatureService,Integer> { 
 	AdditionalFeatureService findById(int id);
 	List<AdditionalFeatureService> getByRentalId(int rentalId);
+	
+	
 }

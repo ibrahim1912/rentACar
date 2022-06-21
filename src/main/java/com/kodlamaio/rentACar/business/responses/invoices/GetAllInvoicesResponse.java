@@ -21,7 +21,9 @@ public class GetAllInvoicesResponse {
 	private String userFirstName;
 	private LocalDate rentalPickUpDate;
 	private LocalDate rentalReturnDate;
-	//private List<AdditionalFeatureItem> additionalFeatureItems;
+	private String brandName;
+	private int status;
+	private int invoiceNumber;
 
 
 }

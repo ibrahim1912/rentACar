@@ -152,7 +152,7 @@ public class CarManager implements CarService {
 
 	private void checkIfBrandLimitExceed(int id) {
 		List<Car> result = carRepository.getByBrandId(id);
-		if (result.size() > 5) {
+		if (result.size() > 10) {
 			throw new BusinessException("NO.MORE.BRANDS.CAN.BE.ADDED");
 		}
 	}
