@@ -12,6 +12,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,6 +23,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name= "additional_feature_services")
+
 public class AdditionalFeatureService {
 	
 	@Id()
@@ -42,7 +45,7 @@ public class AdditionalFeatureService {
 	@JoinColumn(name = "additional_feature_item_id") // id ye göre addionalFeatureItem tablosu
 	private AdditionalFeatureItem additionalFeatureItem;
 	
-	@OneToMany(mappedBy = "additionalFeatureService")
-	private List<Invoice> invoices;
+//	@OneToMany(mappedBy = "additionalFeatureService")
+//	private List<Invoice> invoices;
 	
 }

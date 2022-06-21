@@ -1,6 +1,10 @@
 package com.kodlamaio.rentACar.business.responses.invoices;
 
 import java.time.LocalDate;
+import java.util.List;
+
+import com.kodlamaio.rentACar.entities.concretes.AdditionalFeatureItem;
+import com.kodlamaio.rentACar.entities.concretes.AdditionalFeatureService;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,5 +21,7 @@ public class GetAllInvoicesResponse {
 	private String userFirstName;
 	private LocalDate rentalPickUpDate;
 	private LocalDate rentalReturnDate;
+	//private List<AdditionalFeatureItem> additionalFeatureItems;
+
 
 }

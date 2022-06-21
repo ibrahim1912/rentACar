@@ -11,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +21,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+
 @Table(name="invoices")
 public class Invoice {
 	
@@ -40,7 +43,7 @@ public class Invoice {
 	@JoinColumn(name = "rentalId")
 	private Rental rental;
 	
-	@ManyToOne
-	@JoinColumn(name = "additionalFeatureServiceId")
-	private AdditionalFeatureService additionalFeatureService;
+//	@ManyToOne
+//	@JoinColumn(name = "additionalFeatureServiceId")
+//	private AdditionalFeatureService additionalFeatureService;
 }

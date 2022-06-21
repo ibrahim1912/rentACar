@@ -11,5 +11,5 @@ public class CreateInvoiceRequest {
 
 	private int invoiceNumber;
 	private int rentalId;
-	private int additionalFeatureServiceId;
+//	private int additionalFeatureServiceId;
 }

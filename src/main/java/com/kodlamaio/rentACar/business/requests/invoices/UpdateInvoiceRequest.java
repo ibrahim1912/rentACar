@@ -1,5 +1,13 @@
 package com.kodlamaio.rentACar.business.requests.invoices;
 
-public class UpdateInvoiceRequest {
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class UpdateInvoiceRequest {
+	private int invoiceNumber;
+	private int rentalId;
 }
