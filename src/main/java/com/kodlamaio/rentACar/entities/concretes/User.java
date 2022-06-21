@@ -52,5 +52,8 @@ public class User {
 	@OneToMany(mappedBy = "user")
 	private List<Rental> rentals;
 	
+	@OneToMany(mappedBy = "user")
+	private List<Address> addresses;
+	
 
 }
