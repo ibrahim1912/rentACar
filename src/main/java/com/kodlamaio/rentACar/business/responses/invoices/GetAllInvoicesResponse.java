@@ -3,8 +3,8 @@ package com.kodlamaio.rentACar.business.responses.invoices;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.kodlamaio.rentACar.entities.concretes.AdditionalFeatureItem;
-import com.kodlamaio.rentACar.entities.concretes.AdditionalFeatureService;
+import com.kodlamaio.rentACar.entities.concretes.AdditionalItem;
+import com.kodlamaio.rentACar.entities.concretes.OrderedAdditionalItem;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,7 +22,7 @@ public class GetAllInvoicesResponse {
 	private LocalDate rentalPickUpDate;
 	private LocalDate rentalReturnDate;
 	private String brandName;
-	private int status;
+	private int state;
 	private int invoiceNumber;
 
 

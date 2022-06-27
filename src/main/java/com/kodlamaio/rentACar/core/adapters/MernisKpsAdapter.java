@@ -4,8 +4,8 @@ import java.rmi.RemoteException;
 
 import org.springframework.stereotype.Service;
 
-import com.kodlamaio.rentACar.business.requests.users.CreateUserRequest;
-import com.kodlamaio.rentACar.entities.concretes.User;
+import com.kodlamaio.rentACar.business.requests.individualcustomers.CreateIndividualCustomerRequest;
+import com.kodlamaio.rentACar.business.requests.individualcustomers.UpdateIndividualCustomerRequest;
 
 import tr.gov.nvi.tckimlik.WS.KPSPublicSoapProxy;
 
@@ -14,10 +14,20 @@ import tr.gov.nvi.tckimlik.WS.KPSPublicSoapProxy;
 public class MernisKpsAdapter implements UserValidationService {
 
 	@Override
-	public boolean checkIfRealPerson(CreateUserRequest user) throws NumberFormatException, RemoteException {
+	public boolean checkIfRealPerson(CreateIndividualCustomerRequest createIndividualCustomerRequest) throws NumberFormatException, RemoteException {
 		KPSPublicSoapProxy kpsPublicSoapProxy = new KPSPublicSoapProxy();
-		boolean result = kpsPublicSoapProxy.TCKimlikNoDogrula(Long.parseLong(user.getIdentityNumber()),
-				user.getFirstName().toUpperCase(), user.getLastName().toUpperCase(), user.getBirthDate());
+		boolean result = kpsPublicSoapProxy.TCKimlikNoDogrula(Long.parseLong(createIndividualCustomerRequest.getIdentityNumber()),
+				createIndividualCustomerRequest.getFirstName().toUpperCase(), createIndividualCustomerRequest.getLastName().toUpperCase(), createIndividualCustomerRequest.getBirthDate());
+		return result;
+	}
+
+
+	@Override
+	public boolean checkIfRealPerson(UpdateIndividualCustomerRequest updateIndividualCustomerRequest)
+			throws NumberFormatException, RemoteException {
+		KPSPublicSoapProxy kpsPublicSoapProxy = new KPSPublicSoapProxy();
+		boolean result = kpsPublicSoapProxy.TCKimlikNoDogrula(Long.parseLong(updateIndividualCustomerRequest.getIdentityNumber()),
+				updateIndividualCustomerRequest.getFirstName().toUpperCase(), updateIndividualCustomerRequest.getLastName().toUpperCase(), updateIndividualCustomerRequest.getBirthDate());
 		return result;
 	}
 

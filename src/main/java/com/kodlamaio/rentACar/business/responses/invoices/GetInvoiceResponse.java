@@ -18,6 +18,6 @@ public class GetInvoiceResponse {
 	private LocalDate rentalPickUpDate;
 	private LocalDate rentalReturnDate;
 	private String brandName;
-	private int status;
+	private int state;
 	private int invoiceNumber;
 }
