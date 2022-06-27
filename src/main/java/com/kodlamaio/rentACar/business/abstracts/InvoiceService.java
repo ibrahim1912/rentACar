@@ -24,6 +24,6 @@ public interface InvoiceService {
 
 	DataResult<GetInvoiceResponse> getById(int id);
 
-	DataResult<List<AdditionalItem>> getAllAdditionalFeatureItemsTest(int id);
+	DataResult<List<AdditionalItem>> getAllAdditionalItemsByRentalId(int rentalId);
 
 }

@@ -78,13 +78,13 @@ public class AdditionalItemManager implements AdditionalItemService {
 	public DataResult<GetAdditionalItemResponse> getById(int id) {
 		checkIfAdditionalItemIdExists(id);
 		
-		AdditionalItem additionalItem = this.additionalItemRepository.findById(id).get();
+		AdditionalItem additionalItem = this.additionalItemRepository.findById(id);
 		GetAdditionalItemResponse  response = this.modelMapperService.forResponse().map(additionalItem, GetAdditionalItemResponse.class);
 		return new SuccessDataResult<GetAdditionalItemResponse>(response);
 	}
 	
 	private void checkIfAdditionalItemIdExists(int id) {
-		AdditionalItem additionaltem = this.additionalItemRepository.findById(id).get();
+		AdditionalItem additionaltem = this.additionalItemRepository.findById(id);
 		if(additionaltem == null) {
 			throw new BusinessException("THERE.IS.NOT.ADDITIONAL.ITEM");
 		}

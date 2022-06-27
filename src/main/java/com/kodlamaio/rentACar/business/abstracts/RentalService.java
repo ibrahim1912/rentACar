@@ -15,7 +15,8 @@ import com.kodlamaio.rentACar.entities.concretes.Rental;
 
 public interface RentalService {
 
-	Result add(CreateRentalRequest createRentalRequest);
+	Result addForIndividualCustomers(CreateRentalRequest createRentalRequest);
+	Result addForCorporateCustomers(CreateRentalRequest createRentalRequest);
 	Result update(UpdateRentalRequest updateRentalRequest);
 	Result delete(DeleteRentalRequest deleteRentalRequest);
 	

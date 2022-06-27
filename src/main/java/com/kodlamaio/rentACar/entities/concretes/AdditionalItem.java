@@ -21,6 +21,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name="additional_items")
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler","orderedAdditionalItems"})
 public class AdditionalItem {
 
 	@Id()

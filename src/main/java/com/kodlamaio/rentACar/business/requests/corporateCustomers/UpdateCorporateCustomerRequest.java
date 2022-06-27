@@ -1,4 +1,4 @@
-package com.kodlamaio.rentACar.business.requests.corporatecustomers;
+package com.kodlamaio.rentACar.business.requests.corporateCustomers;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateCorporateCustomerRequest {
+public class UpdateCorporateCustomerRequest {
 
-	//private int corporateCustomerId;
+	private int corporateCustomerId;
 	
 	@NotBlank
 	@NotNull

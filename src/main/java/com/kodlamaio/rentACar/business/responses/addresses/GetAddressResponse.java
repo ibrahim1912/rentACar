@@ -12,5 +12,5 @@ public class GetAddressResponse {
 	private int id;
 	private String contactAddress;
 	private String invoiceAddress;
-	private String userFirstName;
+	private String firstName;
 }

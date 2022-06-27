@@ -26,4 +26,5 @@ public class UpdateCarRequest {
 	private int colorId; 
 	private int kilometer;
 	private int minFindeksScore;
+	private String plate;
 }

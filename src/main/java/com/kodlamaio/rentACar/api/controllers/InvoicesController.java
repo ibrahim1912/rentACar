@@ -53,9 +53,9 @@ public class InvoicesController {
 	}
 	
 	
-	@GetMapping("/getalladditionalfeatureitemstest")
-	public DataResult<List<AdditionalItem>> getAllAdditionalFeatureItemsTest(@RequestParam int id) {
-		return this.invoiceService.getAllAdditionalFeatureItemsTest(id);
+	@GetMapping("/getalladditionalitemsbyrentalid")
+	public DataResult<List<AdditionalItem>> getAllAdditionalItemsByRentalId(@RequestParam int id) {
+		return this.invoiceService.getAllAdditionalItemsByRentalId(id);
 	}
 	
 	

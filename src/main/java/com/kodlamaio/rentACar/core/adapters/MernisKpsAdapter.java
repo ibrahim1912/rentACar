@@ -4,8 +4,8 @@ import java.rmi.RemoteException;
 
 import org.springframework.stereotype.Service;
 
-import com.kodlamaio.rentACar.business.requests.individualcustomers.CreateIndividualCustomerRequest;
-import com.kodlamaio.rentACar.business.requests.individualcustomers.UpdateIndividualCustomerRequest;
+import com.kodlamaio.rentACar.business.requests.individualCustomers.CreateIndividualCustomerRequest;
+import com.kodlamaio.rentACar.business.requests.individualCustomers.UpdateIndividualCustomerRequest;
 
 import tr.gov.nvi.tckimlik.WS.KPSPublicSoapProxy;
 

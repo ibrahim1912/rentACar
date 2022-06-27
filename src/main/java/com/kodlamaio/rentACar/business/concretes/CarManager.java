@@ -52,6 +52,7 @@ public class CarManager implements CarService {
 		checkIfBrandLimitExceed(createCarRequest.getBrandId());
 		checkIfBrandIdExist(createCarRequest.getBrandId());
 		checkIfColorIdExists(createCarRequest.getColorId());
+		checkIfCarPlateIsExists(createCarRequest.getPlate());
 		
 		Car car = this.modelMapperService.forRequest().map(createCarRequest, Car.class);
 		car.setState(1);
@@ -94,12 +95,10 @@ public class CarManager implements CarService {
 		checkIfCarIdExists(updateCarRequest.getId());
 		checkIfBrandIdExist(updateCarRequest.getBrandId());
 		checkIfColorIdExists(updateCarRequest.getColorId());  
-		checkIfBrandIdSame(updateCarRequest.getId(), updateCarRequest.getBrandId()); //ismini düzeltcem
+		checkIfBrandIdSame(updateCarRequest.getId(), updateCarRequest.getBrandId()); 
+		checkIfCarPlateIsSame(updateCarRequest.getId(),updateCarRequest);
 		
 		Car car = this.modelMapperService.forRequest().map(updateCarRequest, Car.class);
-		Car carFromDb = this.carRepository.findById(car.getId());
-		car.setState(carFromDb.getState()); //bunu da kontrol et
-
 		this.carRepository.save(car);
 		return new SuccessResult("CAR.UPDATED");
 
@@ -176,7 +175,7 @@ public class CarManager implements CarService {
 
 	private void checkIfBrandLimitExceed(int brandId) {
 		List<Car> result = carRepository.getByBrandId(brandId);
-		if (result.size() > 1) {
+		if (result.size() > 10) {
 			throw new BusinessException("NO.MORE.BRANDS.CAN.BE.ADDED");
 		}
 	}
@@ -188,7 +187,7 @@ public class CarManager implements CarService {
 		}
 	}
 	
-	private void checkIfBrandIdSame(int carId,int brandId) { //ismi düzelt
+	private void checkIfBrandIdSame(int carId,int brandId) { 
 		Car car = this.carRepository.findById(carId);
 		Brand brand = this.brandRepository.findById(brandId);
 		if(car.getBrand().getId() != brand.getId()) {
@@ -208,7 +207,20 @@ public class CarManager implements CarService {
 		if(color==null) {
 			throw new BusinessException("THERE.IS.NOT.COLOR");
 		}
-		
+	}
+	
+	private void checkIfCarPlateIsExists(String plate) {
+		Car car = this.carRepository.findByPlate(plate);
+		if(car != null) {
+			throw new BusinessException("CAR.PLATE.EXISTS");
+		}
+	}
+	
+	private void checkIfCarPlateIsSame(int carId,UpdateCarRequest updateCarRequest) {
+		Car car = this.carRepository.findById(carId);
+		if(!car.getPlate().equals(updateCarRequest.getPlate())) {
+			checkIfCarPlateIsExists(updateCarRequest.getPlate());
+		}
 	}
 
 

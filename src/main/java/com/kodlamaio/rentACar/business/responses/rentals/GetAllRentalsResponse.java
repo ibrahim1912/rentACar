@@ -24,8 +24,10 @@ public class GetAllRentalsResponse {
 	private String cityName;
 	private int pickUpCityId;
 	private int returnCityId;
-	private int individualCustomerId;
+	private int customerId;
 	private String email;
+	private String customer;
+	
 
 	
 

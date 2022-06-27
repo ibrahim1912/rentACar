@@ -18,6 +18,7 @@ public class GetAllCarsResponse {
 	private int kilometer;
 	private int state;
 	private String cityName;
+	private String plate;
 	private int cityId;
 	private int minFindeksScore;
 	

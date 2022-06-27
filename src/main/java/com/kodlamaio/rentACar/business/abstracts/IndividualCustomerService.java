@@ -3,11 +3,11 @@ package com.kodlamaio.rentACar.business.abstracts;
 import java.rmi.RemoteException;
 import java.util.List;
 
-import com.kodlamaio.rentACar.business.requests.individualcustomers.CreateIndividualCustomerRequest;
-import com.kodlamaio.rentACar.business.requests.individualcustomers.DeleteIndividualCustomerRequest;
-import com.kodlamaio.rentACar.business.requests.individualcustomers.UpdateIndividualCustomerRequest;
-import com.kodlamaio.rentACar.business.responses.individualcustomers.GetAllIndividualCustomersResponse;
-import com.kodlamaio.rentACar.business.responses.individualcustomers.GetIndividualCustomerResponse;
+import com.kodlamaio.rentACar.business.requests.individualCustomers.CreateIndividualCustomerRequest;
+import com.kodlamaio.rentACar.business.requests.individualCustomers.DeleteIndividualCustomerRequest;
+import com.kodlamaio.rentACar.business.requests.individualCustomers.UpdateIndividualCustomerRequest;
+import com.kodlamaio.rentACar.business.responses.individualCustomers.GetAllIndividualCustomersResponse;
+import com.kodlamaio.rentACar.business.responses.individualCustomers.GetIndividualCustomerResponse;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
 

@@ -56,6 +56,7 @@ public class InvoiceManager implements InvoiceService {
 	public Result add(CreateInvoiceRequest createInvoiceRequest) {
 		checkIfInvoiceStatusZero(createInvoiceRequest.getRentalId());
 		checkIfInvoiceNumberExists(createInvoiceRequest.getInvoiceNumber());
+		
 		Invoice invoice = this.modelMapperService.forRequest().map(createInvoiceRequest, Invoice.class);
 		invoice.setCurrentDate(LocalDate.now());
 		invoice.setTotalPrice(calculateTotalPrice(invoice.getRental().getId()));
@@ -67,7 +68,8 @@ public class InvoiceManager implements InvoiceService {
 
 	@Override
 	public Result delete(DeleteInvoiceRequest deleteInvoiceRequest) {
-	
+		checkIfInvoiceIdExists(deleteInvoiceRequest.getId());
+		
 		Invoice invoice = this.invoiceRepository.findById(deleteInvoiceRequest.getId());
 		invoice.setState(1);
 		this.invoiceRepository.save(invoice);
@@ -84,27 +86,30 @@ public class InvoiceManager implements InvoiceService {
 		List<Invoice> invoices = this.invoiceRepository.findAll();
 		List<GetAllInvoicesResponse> response = invoices.stream()
 				.map(invoice -> this.modelMapperService.forResponse().map(invoice, GetAllInvoicesResponse.class))
-				//.filter(invoice -> invoice.getStatus() == 0)
 				.collect(Collectors.toList());
 		return new SuccessDataResult<List<GetAllInvoicesResponse>>(response);
 	}
 
 	@Override
 	public DataResult<GetInvoiceResponse> getById(int id) {
+		checkIfInvoiceIdExists(id);
+		
 		Invoice invoice = this.invoiceRepository.findById(id);
 		GetInvoiceResponse response = this.modelMapperService.forResponse().map(invoice, GetInvoiceResponse.class);
 		return new SuccessDataResult<GetInvoiceResponse>(response);
 	}
 
 	@Override
-	public DataResult<List<AdditionalItem>> getAllAdditionalFeatureItemsTest(int id) { //ismi düzelt
+	public DataResult<List<AdditionalItem>> getAllAdditionalItemsByRentalId(int rentalId) { 
+		checkIfRentalIdExists(rentalId);
+		
 		List<OrderedAdditionalItem> orderedAdditionalItems = this.orderedAdditionalItemRepository
-				.getByRentalId(id);
+				.getByRentalId(rentalId);
 		List<AdditionalItem> additionalItems = new ArrayList<AdditionalItem>();
 
 		for (OrderedAdditionalItem orderedAdditionalItem : orderedAdditionalItems) {
 			AdditionalItem additionalItem = this.additionaItemRepository
-					.findById(orderedAdditionalItem.getAdditionalItem().getId()).get();
+					.findById(orderedAdditionalItem.getAdditionalItem().getId());
 			additionalItems.add(additionalItem);
 		}
 		return new SuccessDataResult<List<AdditionalItem>>(additionalItems);
@@ -124,7 +129,6 @@ public class InvoiceManager implements InvoiceService {
 		for (OrderedAdditionalItem additionalFeatureService : liste) {
 			totalPrice += additionalFeatureService.getTotalPrice();
 		}
-
 		return totalPrice;
 
 	}
@@ -140,6 +144,20 @@ public class InvoiceManager implements InvoiceService {
 		Invoice invoice = this.invoiceRepository.findByInvoiceNumber(invoiceNumber);
 		if (invoice != null) {
 			throw new BusinessException("INVOICE.NUMBER.EXISTS");
+		}
+	}
+	
+	private void checkIfInvoiceIdExists(int id) {
+		Invoice invoice = this.invoiceRepository.findById(id);
+		if(invoice == null) {
+			throw new BusinessException("THERE.IS.NOT.INVOICE");
+		}
+	}
+	
+	private void checkIfRentalIdExists(int rentalId) {
+		Rental rental = this.rentalRepository.findById(rentalId);
+		if(rental == null) {
+			throw new BusinessException("THERE.IS.NO.RENTED.CAR");
 		}
 	}
 	

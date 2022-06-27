@@ -10,11 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kodlamaio.rentACar.business.abstracts.IndividualCustomerService;
-import com.kodlamaio.rentACar.business.requests.individualcustomers.CreateIndividualCustomerRequest;
-import com.kodlamaio.rentACar.business.requests.individualcustomers.DeleteIndividualCustomerRequest;
-import com.kodlamaio.rentACar.business.requests.individualcustomers.UpdateIndividualCustomerRequest;
-import com.kodlamaio.rentACar.business.responses.individualcustomers.GetAllIndividualCustomersResponse;
-import com.kodlamaio.rentACar.business.responses.individualcustomers.GetIndividualCustomerResponse;
+import com.kodlamaio.rentACar.business.requests.individualCustomers.CreateIndividualCustomerRequest;
+import com.kodlamaio.rentACar.business.requests.individualCustomers.DeleteIndividualCustomerRequest;
+import com.kodlamaio.rentACar.business.requests.individualCustomers.UpdateIndividualCustomerRequest;
+import com.kodlamaio.rentACar.business.responses.individualCustomers.GetAllIndividualCustomersResponse;
+import com.kodlamaio.rentACar.business.responses.individualCustomers.GetIndividualCustomerResponse;
 import com.kodlamaio.rentACar.core.adapters.UserValidationService;
 import com.kodlamaio.rentACar.core.utilities.exceptions.BusinessException;
 import com.kodlamaio.rentACar.core.utilities.mapping.ModelMapperService;
@@ -50,6 +50,7 @@ public class IndividualCustomerManager implements IndividualCustomerService {
 
 		IndividualCustomer individualCustomer = this.modelMapperService.forRequest()
 				.map(createIndividualCustomerRequest, IndividualCustomer.class);
+		
 		this.individualCustomerRepository.save(individualCustomer);
 		return new SuccessResult("INDIVIDUAL.CUSTOMER.ADDED");
 	}

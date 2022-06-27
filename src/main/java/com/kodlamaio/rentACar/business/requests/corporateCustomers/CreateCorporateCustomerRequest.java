@@ -1,6 +1,4 @@
-package com.kodlamaio.rentACar.business.requests.individualcustomers;
-
-
+package com.kodlamaio.rentACar.business.requests.corporateCustomers;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -14,10 +12,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateIndividualCustomerRequest {
-	
+public class CreateCorporateCustomerRequest {
 
-	//private int individualCustomerId;
+	//private int corporateCustomerId;
+	
 	@NotBlank
 	@NotNull
 	@Pattern(regexp = "^(?=.{1,64}@)[\\p{L}0-9_-]+(\\.[\\p{L}0-9_-]+)*@" 
@@ -37,22 +35,13 @@ public class CreateIndividualCustomerRequest {
 	*Min 8 characters.**/
 	private String password;
 	
+	@NotBlank
+	@NotNull
+	@Size(min=3,max=50,message="Must be at least three characters.")
+	private String companyName;
 	
 	@NotBlank
 	@NotNull
 	@Pattern(regexp = "[0-9]{11}", message = "Length must be 11")
-	private String identityNumber;
-	
-	@NotBlank
-	@NotNull
-	@Size(min=3,max=50,message="Must be at least three characters.")
-	private String firstName;
-	
-	@NotBlank
-	@NotNull
-	@Size(min=3,max=50,message="Must be at least three characters.")
-	private String lastName;
-	
-	private int birthDate;
-
+	private String taxNumber;
 }

@@ -1,4 +1,6 @@
-package com.kodlamaio.rentACar.business.requests.individualcustomers;
+package com.kodlamaio.rentACar.business.requests.individualCustomers;
+
+
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -12,10 +14,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateIndividualCustomerRequest {
-
-	private int individualCustomerId;
+public class CreateIndividualCustomerRequest {
 	
+
+	//private int individualCustomerId;
 	@NotBlank
 	@NotNull
 	@Pattern(regexp = "^(?=.{1,64}@)[\\p{L}0-9_-]+(\\.[\\p{L}0-9_-]+)*@" 
@@ -52,4 +54,5 @@ public class UpdateIndividualCustomerRequest {
 	private String lastName;
 	
 	private int birthDate;
+
 }

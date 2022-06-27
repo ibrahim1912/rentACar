@@ -1,5 +1,6 @@
 package com.kodlamaio.rentACar.business.concretes;
 
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,8 +48,13 @@ public class OrderedAdditionalItemManager implements OrderedAdditionalItemServic
 
 	@Override
 	public Result add(CreateOrderedAdditionalItemRequest createOrderedAdditionalItemRequest) {
+		
+		checkIfRentalIdExists(createOrderedAdditionalItemRequest.getRentalId());
+		checkIfAdditionalItemIdExists(createOrderedAdditionalItemRequest.getAdditionalItemId());
+		checkIfDatesAreCorrect(createOrderedAdditionalItemRequest.getPickUpDate(),createOrderedAdditionalItemRequest.getReturnDate());
+		
 		AdditionalItem additionalItem = this.additionalItemRepository
-				.findById(createOrderedAdditionalItemRequest.getAdditionalItemId()).get();
+				.findById(createOrderedAdditionalItemRequest.getAdditionalItemId());
 		OrderedAdditionalItem orderedAdditionalItem = this.modelMapperService.forRequest()
 				.map(createOrderedAdditionalItemRequest, OrderedAdditionalItem.class);
 	
@@ -62,19 +68,18 @@ public class OrderedAdditionalItemManager implements OrderedAdditionalItemServic
 	//burası kaldı
 	@Override
 	public Result update(UpdateOrderedAdditionalItemRequest updateAdditionalFeatureServiceRequest) {
+		
 		checkIfOrderedAdditionalItemIdExists(updateAdditionalFeatureServiceRequest.getId());
-		//checkIfRentalIdSame(updateAdditionalFeatureServiceRequest.getId(),updateAdditionalFeatureServiceRequest.getRentalId());
+		checkIfRentalIdExists(updateAdditionalFeatureServiceRequest.getRentalId());
+		checkIfAdditionalItemIdExists(updateAdditionalFeatureServiceRequest.getAdditionalItemId());
+		checkIfDatesAreCorrect(updateAdditionalFeatureServiceRequest.getPickUpDate(),updateAdditionalFeatureServiceRequest.getReturnDate());
+		
+	
 		OrderedAdditionalItem orderedAdditionalItem = this.modelMapperService.forRequest()
 				.map(updateAdditionalFeatureServiceRequest, OrderedAdditionalItem.class);
-		Rental rental = this.rentalRepository.findById(orderedAdditionalItem.getRental().getId());
 		
 		AdditionalItem additionalItem = this.additionalItemRepository
-				.findById(orderedAdditionalItem.getAdditionalItem().getId()).get();
-		
-		checkIfRentalIdSame(orderedAdditionalItem.getId(),rental.getId());
-		
-		
-		
+				.findById(orderedAdditionalItem.getAdditionalItem().getId());
 		orderedAdditionalItem.setTotalPrice(calculateTotalPrice(orderedAdditionalItem, additionalItem.getPrice()));
 		this.orderedAdditionalItemRepository.save(orderedAdditionalItem);
 		return new SuccessResult("SERVICES.UPDATE");
@@ -108,14 +113,6 @@ public class OrderedAdditionalItemManager implements OrderedAdditionalItemServic
 		return new SuccessDataResult<GetOrderedAdditionalItemResponse>(response);
 	}
 	
-	private void checkIfRentalIdSame(int orderId,int rentalId) {
-		Rental rental = this.rentalRepository.findById(rentalId);
-		if(rental.getId() != orderId || rental==null) {
-			throw new BusinessException("ERROR"); //ismi düzelt 
-		}
-		
-	}
-	
 	private void checkIfOrderedAdditionalItemIdExists(int id) {
 		OrderedAdditionalItem orderedAdditionalItem = this.orderedAdditionalItemRepository.findById(id);
 		if(orderedAdditionalItem == null) {
@@ -129,6 +126,26 @@ public class OrderedAdditionalItemManager implements OrderedAdditionalItemServic
 		totalPrice = price * daysDifference;
 		orderedAdditionalItem.setTotalDay(daysDifference);
 		return totalPrice;
+	}
+	
+	private void checkIfRentalIdExists(int rentalId) {
+		Rental rental = this.rentalRepository.findById(rentalId);
+		if(rental == null) {
+			throw new BusinessException("THERE.IS.NOT.RENTAL"); //İSMİ DÜZELT
+		}
+	}
+	
+	private void checkIfAdditionalItemIdExists(int additionalItemId) {
+		AdditionalItem additionalItem = this.additionalItemRepository.findById(additionalItemId);
+		if(additionalItem == null) {
+			throw new BusinessException("THERE.IS.NOT.ADDITIONAL.ITEM"); //İSMİ DÜZELT
+		}
+	}
+	
+	private void checkIfDatesAreCorrect(LocalDate pickUpDate, LocalDate returnDate) {
+		if (!pickUpDate.isBefore(returnDate) || pickUpDate.isBefore(LocalDate.now())) {
+			throw new BusinessException("DATE.ERROR"); 
+		}
 	}
 	
 

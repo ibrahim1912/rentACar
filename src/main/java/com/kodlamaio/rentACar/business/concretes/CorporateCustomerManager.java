@@ -7,14 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kodlamaio.rentACar.business.abstracts.CorporateCustomerService;
-import com.kodlamaio.rentACar.business.requests.corporatecustomers.CreateCorporateCustomerRequest;
-import com.kodlamaio.rentACar.business.requests.corporatecustomers.DeleteCorporateCustomerRequest;
-import com.kodlamaio.rentACar.business.requests.corporatecustomers.UpdateCorporateCustomerRequest;
-import com.kodlamaio.rentACar.business.requests.individualcustomers.CreateIndividualCustomerRequest;
-import com.kodlamaio.rentACar.business.requests.individualcustomers.DeleteIndividualCustomerRequest;
-import com.kodlamaio.rentACar.business.requests.individualcustomers.UpdateIndividualCustomerRequest;
-import com.kodlamaio.rentACar.business.responses.corporatecustomers.GetAllCorporateCustomersResponse;
-import com.kodlamaio.rentACar.business.responses.corporatecustomers.GetCorporateCustomerResponse;
+import com.kodlamaio.rentACar.business.requests.corporateCustomers.CreateCorporateCustomerRequest;
+import com.kodlamaio.rentACar.business.requests.corporateCustomers.DeleteCorporateCustomerRequest;
+import com.kodlamaio.rentACar.business.requests.corporateCustomers.UpdateCorporateCustomerRequest;
+import com.kodlamaio.rentACar.business.requests.individualCustomers.CreateIndividualCustomerRequest;
+import com.kodlamaio.rentACar.business.requests.individualCustomers.DeleteIndividualCustomerRequest;
+import com.kodlamaio.rentACar.business.requests.individualCustomers.UpdateIndividualCustomerRequest;
+import com.kodlamaio.rentACar.business.responses.corporateCustomers.GetAllCorporateCustomersResponse;
+import com.kodlamaio.rentACar.business.responses.corporateCustomers.GetCorporateCustomerResponse;
 import com.kodlamaio.rentACar.core.utilities.exceptions.BusinessException;
 import com.kodlamaio.rentACar.core.utilities.mapping.ModelMapperService;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
@@ -93,7 +93,7 @@ public class CorporateCustomerManager implements CorporateCustomerService {
 	
 	private void checkIfCompanyNameIsSame(String companyName) {
 		CorporateCustomer corporateCustomer = this.corporateCustomerRepository.findByCompanyName(companyName);
-		if(corporateCustomer == null){
+		if(corporateCustomer != null){
 			throw new BusinessException("COMPANY.NAME.EXISTS");
 		}
 	}
