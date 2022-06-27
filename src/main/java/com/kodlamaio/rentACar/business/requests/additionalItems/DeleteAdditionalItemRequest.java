@@ -1,4 +1,4 @@
-package com.kodlamaio.rentACar.business.requests.additionalFeatureItems;
+package com.kodlamaio.rentACar.business.requests.additionalItems;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DeleteAdditionalFeatureItemRequest {
+public class DeleteAdditionalItemRequest {
 	private int id;
 }

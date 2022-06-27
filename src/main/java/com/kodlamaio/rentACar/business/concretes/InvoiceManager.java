@@ -21,33 +21,36 @@ import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
 import com.kodlamaio.rentACar.core.utilities.results.SuccessDataResult;
 import com.kodlamaio.rentACar.core.utilities.results.SuccessResult;
-import com.kodlamaio.rentACar.dataAccess.abstracts.AdditionalFeatureItemRepository;
-import com.kodlamaio.rentACar.dataAccess.abstracts.AdditionalFeatureServiceRepository;
+import com.kodlamaio.rentACar.dataAccess.abstracts.AdditionalItemRepository;
+import com.kodlamaio.rentACar.dataAccess.abstracts.OrderedAdditionalItemRepository;
 import com.kodlamaio.rentACar.dataAccess.abstracts.InvoiceRepository;
 import com.kodlamaio.rentACar.dataAccess.abstracts.RentalRepository;
-import com.kodlamaio.rentACar.entities.concretes.AdditionalFeatureItem;
-import com.kodlamaio.rentACar.entities.concretes.AdditionalFeatureService;
+import com.kodlamaio.rentACar.entities.concretes.AdditionalItem;
+import com.kodlamaio.rentACar.entities.concretes.OrderedAdditionalItem;
 import com.kodlamaio.rentACar.entities.concretes.Brand;
 import com.kodlamaio.rentACar.entities.concretes.Invoice;
 import com.kodlamaio.rentACar.entities.concretes.Rental;
 
 @Service
 public class InvoiceManager implements InvoiceService {
-
-	@Autowired
+	
 	private InvoiceRepository invoiceRepository;
-
-	@Autowired
 	private RentalRepository rentalRepository;
-
-	@Autowired
-	private AdditionalFeatureServiceRepository additionalFeatureServiceRepository;
-
-	@Autowired
+	private OrderedAdditionalItemRepository orderedAdditionalItemRepository;
 	private ModelMapperService modelMapperService;
+	private AdditionalItemRepository additionaItemRepository;
 
 	@Autowired
-	private AdditionalFeatureItemRepository additionalFeatureItemRepository;
+	public InvoiceManager(InvoiceRepository invoiceRepository, RentalRepository rentalRepository,
+			OrderedAdditionalItemRepository orderedAdditionalItemRepository, ModelMapperService modelMapperService,
+			AdditionalItemRepository additionaItemRepository) {
+
+		this.invoiceRepository = invoiceRepository;
+		this.rentalRepository = rentalRepository;
+		this.orderedAdditionalItemRepository = orderedAdditionalItemRepository;
+		this.modelMapperService = modelMapperService;
+		this.additionaItemRepository = additionaItemRepository;
+	}
 
 	@Override
 	public Result add(CreateInvoiceRequest createInvoiceRequest) {
@@ -56,7 +59,7 @@ public class InvoiceManager implements InvoiceService {
 		Invoice invoice = this.modelMapperService.forRequest().map(createInvoiceRequest, Invoice.class);
 		invoice.setCurrentDate(LocalDate.now());
 		invoice.setTotalPrice(calculateTotalPrice(invoice.getRental().getId()));
-		invoice.setStatus(0); // invoice aktif (iptal edilmemiş)
+		invoice.setState(0); // invoice aktif (iptal edilmemiş)
 
 		this.invoiceRepository.save(invoice);
 		return new SuccessResult("INVOICE.CREATED");
@@ -66,14 +69,13 @@ public class InvoiceManager implements InvoiceService {
 	public Result delete(DeleteInvoiceRequest deleteInvoiceRequest) {
 	
 		Invoice invoice = this.invoiceRepository.findById(deleteInvoiceRequest.getId());
-		invoice.setStatus(1);
+		invoice.setState(1);
 		this.invoiceRepository.save(invoice);
 		return new SuccessResult("INVOICE.CANCELLED");
 	}
 
 	@Override
 	public Result update(UpdateInvoiceRequest updateInvoiceRequest) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -95,19 +97,17 @@ public class InvoiceManager implements InvoiceService {
 	}
 
 	@Override
-	public DataResult<List<AdditionalFeatureItem>> getAllAdditionalFeatureItemsTest(int id) {
-		List<AdditionalFeatureService> additionalFeatureServices = this.additionalFeatureServiceRepository
+	public DataResult<List<AdditionalItem>> getAllAdditionalFeatureItemsTest(int id) { //ismi düzelt
+		List<OrderedAdditionalItem> orderedAdditionalItems = this.orderedAdditionalItemRepository
 				.getByRentalId(id);
-		List<AdditionalFeatureItem> additionalFeatureItems = new ArrayList<AdditionalFeatureItem>();
+		List<AdditionalItem> additionalItems = new ArrayList<AdditionalItem>();
 
-		for (AdditionalFeatureService additionalFeatureService : additionalFeatureServices) {
-			AdditionalFeatureItem additionalFeatureItem = this.additionalFeatureItemRepository
-					.findById(additionalFeatureService.getAdditionalFeatureItem().getId());
-			additionalFeatureItems.add(additionalFeatureItem);
-
+		for (OrderedAdditionalItem orderedAdditionalItem : orderedAdditionalItems) {
+			AdditionalItem additionalItem = this.additionaItemRepository
+					.findById(orderedAdditionalItem.getAdditionalItem().getId()).get();
+			additionalItems.add(additionalItem);
 		}
-
-		return new SuccessDataResult<List<AdditionalFeatureItem>>(additionalFeatureItems);
+		return new SuccessDataResult<List<AdditionalItem>>(additionalItems);
 	}
 
 	private double calculateTotalPrice(int rentalId) {
@@ -119,9 +119,9 @@ public class InvoiceManager implements InvoiceService {
 
 	private double calculateTotalPriceOfAdditionalFeatureServiceByRentalId(int id) {
 		Rental rental = this.rentalRepository.findById(id);
-		List<AdditionalFeatureService> liste = rental.getAdditionalFeatureServices();
+		List<OrderedAdditionalItem> liste = rental.getAdditionalFeatureServices();
 		double totalPrice = 0;
-		for (AdditionalFeatureService additionalFeatureService : liste) {
+		for (OrderedAdditionalItem additionalFeatureService : liste) {
 			totalPrice += additionalFeatureService.getTotalPrice();
 		}
 
@@ -131,7 +131,7 @@ public class InvoiceManager implements InvoiceService {
 
 	private void checkIfInvoiceStatusZero(int id) {
 		Invoice invoicefromDb = this.invoiceRepository.findByRentalId(id);
-		if ((invoicefromDb != null) && (invoicefromDb.getStatus() != 1)) {
+		if ((invoicefromDb != null) && (invoicefromDb.getState() != 1)) {
 			throw new BusinessException("RENTAL.HAVE.ALREADY.A.INVOICE");
 		}
 	}

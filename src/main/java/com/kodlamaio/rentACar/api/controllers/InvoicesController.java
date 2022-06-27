@@ -18,14 +18,18 @@ import com.kodlamaio.rentACar.business.responses.invoices.GetAllInvoicesResponse
 import com.kodlamaio.rentACar.business.responses.invoices.GetInvoiceResponse;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
-import com.kodlamaio.rentACar.entities.concretes.AdditionalFeatureItem;
+import com.kodlamaio.rentACar.entities.concretes.AdditionalItem;
 
 @RestController
 @RequestMapping("/api/invoices")
 public class InvoicesController {
 
-	@Autowired
+
 	private InvoiceService invoiceService;
+	@Autowired
+	public InvoicesController(InvoiceService invoiceService) {
+		this.invoiceService = invoiceService;
+	}
 
 	@PostMapping("/add")
 	public Result add(@RequestBody CreateInvoiceRequest createInvoiceRequest) {
@@ -50,7 +54,7 @@ public class InvoicesController {
 	
 	
 	@GetMapping("/getalladditionalfeatureitemstest")
-	public DataResult<List<AdditionalFeatureItem>> getAllAdditionalFeatureItemsTest(@RequestParam int id) {
+	public DataResult<List<AdditionalItem>> getAllAdditionalFeatureItemsTest(@RequestParam int id) {
 		return this.invoiceService.getAllAdditionalFeatureItemsTest(id);
 	}
 	

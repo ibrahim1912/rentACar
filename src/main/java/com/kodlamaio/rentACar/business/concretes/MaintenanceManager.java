@@ -1,5 +1,6 @@
 package com.kodlamaio.rentACar.business.concretes;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,18 +41,20 @@ public class MaintenanceManager implements MaintenanceService {
 
 	@Override
 	public Result add(CreateMaintenanceRequest createMaintenanceRequest) {
-		checkIfCarState(createMaintenanceRequest.getCarId());
-			Maintenance maintenance = this.modelMapperService.forResponse().map(createMaintenanceRequest,
-					Maintenance.class);
-
-			Car car = this.carRepository.findById(createMaintenanceRequest.getCarId());
-			car.setId(createMaintenanceRequest.getCarId());
-			car.setState(2);
-			maintenance.setCar(car);
-
-			this.maintenanceRepository.save(maintenance);
-			return new SuccessResult("CAR.IS.IN.MAINTENANCE");
 		
+		checkIfCarIdIsExists(createMaintenanceRequest.getCarId());
+		checkIfCarIsMaintenance(createMaintenanceRequest.getCarId());
+		checkIfCarIsRented(createMaintenanceRequest.getCarId());
+		checkIfDatesAreCorrect(createMaintenanceRequest.getSentDate(),createMaintenanceRequest.getReturnedDate());
+		
+		Maintenance maintenance = this.modelMapperService.forResponse().map(createMaintenanceRequest,
+				Maintenance.class);
+
+		Car car = this.carRepository.findById(createMaintenanceRequest.getCarId());
+		car.setState(2);
+
+		this.maintenanceRepository.save(maintenance);
+		return new SuccessResult("CAR.IS.IN.MAINTENANCE");
 
 	}
 
@@ -67,30 +70,36 @@ public class MaintenanceManager implements MaintenanceService {
 
 	@Override
 	public Result update(UpdateMaintenanceRequest updateMaintenanceRequest) {
-		Maintenance maintenance = this.modelMapperService.forRequest()
-				.map(updateMaintenanceRequest, Maintenance.class);
-		Maintenance miantenanceFromDatabase = this.maintenanceRepository.findById(updateMaintenanceRequest.getId());
-		maintenance.setDatesent(miantenanceFromDatabase.getDatesent());
+		checkIfMaintenanceIdExists(updateMaintenanceRequest.getId());
+		checkIfDatesAreCorrect(updateMaintenanceRequest.getSentDate(),updateMaintenanceRequest.getReturnedDate());
+		
+		Maintenance maintenance = this.modelMapperService.forRequest().map(updateMaintenanceRequest, Maintenance.class);
 		this.maintenanceRepository.save(maintenance);
-		return new SuccessResult();
+		return new SuccessResult("MAINTENANCE.UPDATED");
 	}
 
 	@Override
 	public Result delete(DeleteMaintenanceRequest deleteMaintenanceRequest) {
+		checkIfMaintenanceIdExists(deleteMaintenanceRequest.getId());
+		
 		this.maintenanceRepository.deleteById(deleteMaintenanceRequest.getId());
 		return new SuccessResult("MAINTENANCE.DELETED");
 	}
 
 	@Override
 	public DataResult<GetMaintenanceResponse> getById(int id) {
-		Maintenance maintance = this.maintenanceRepository.findById(id);
-		GetMaintenanceResponse response = this.modelMapperService.forResponse().map(maintance,
+		checkIfMaintenanceIdExists(id);
+		
+		Maintenance maintanance = this.maintenanceRepository.findById(id);
+		GetMaintenanceResponse response = this.modelMapperService.forResponse().map(maintanance,
 				GetMaintenanceResponse.class);
 		return new SuccessDataResult<GetMaintenanceResponse>(response);
 	}
 
 	@Override
 	public Result updateState(UpdateMaintenanceRequest updateMaintenanceRequest) {
+		checkIfCarIdIsExists(updateMaintenanceRequest.getCarId());
+		
 		Car car = this.carRepository.findById(updateMaintenanceRequest.getCarId());
 		if (car.getState() == 1) {
 			car.setState(2);
@@ -101,12 +110,47 @@ public class MaintenanceManager implements MaintenanceService {
 		return new SuccessResult();
 	}
 
-	private void checkIfCarState(int id) {
-		Car car = this.carRepository.findById(id);
-		if (car.getState() != 1) {
-			throw new BusinessException("CAR.IS.MAINTENANCED.OR.RENTED");
+	
+	private void checkIfCarIsMaintenance(int carId) {
+		Car car = this.carRepository.findById(carId);
+		if (car.getState() == 2) {
+			throw new BusinessException("CAR.IS.MAINTENANCED");
 		}
-		
-
 	}
+	
+	private void checkIfCarIsRented(int carId) {
+		Car car = this.carRepository.findById(carId);
+		if (car.getState() == 3) {
+			throw new BusinessException("CAR.IS.RENTED");
+		}
+	}
+	
+	private void checkIfCarIdIsExists(int carId) { 
+		Car car = this.carRepository.findById(carId);
+		if(car == null) {
+			throw new BusinessException("THERE.IS.NOT.CAR"); 
+		}
+	}
+
+	private void checkIfMaintenanceIdExists(int maintenanceId) { 
+		Maintenance maintenance = this.maintenanceRepository.findById(maintenanceId);
+		if(maintenance ==  null) {
+			throw new BusinessException("THERE.IS.NOT.MAINTENANCE"); 
+		}
+	}
+	
+	private void checkIfDatesAreCorrect(LocalDate sentDate, LocalDate returnedDate) {
+		if (!sentDate.isBefore(returnedDate) || sentDate.isBefore(LocalDate.now())) {
+			throw new BusinessException("DATE.ERROR"); //isme bak
+		}
+	}
+	
+	private void checkIfCarIdExistsInSame(int maintenanceId,int carId) { 
+		Maintenance maintenance = this.maintenanceRepository.findById(maintenanceId);
+		if(maintenance.getCar().getId() !=  carId) {
+			throw new BusinessException("CAR.NOT.FOUND"); 
+		}
+	}
+	
+	
 }

@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.hibernate.annotations.Check;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,23 +20,39 @@ import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
 import com.kodlamaio.rentACar.core.utilities.results.SuccessDataResult;
 import com.kodlamaio.rentACar.core.utilities.results.SuccessResult;
+import com.kodlamaio.rentACar.dataAccess.abstracts.BrandRepository;
 import com.kodlamaio.rentACar.dataAccess.abstracts.CarRepository;
+import com.kodlamaio.rentACar.dataAccess.abstracts.ColorRepository;
+import com.kodlamaio.rentACar.entities.concretes.Brand;
 import com.kodlamaio.rentACar.entities.concretes.Car;
+import com.kodlamaio.rentACar.entities.concretes.Color;
 import com.kodlamaio.rentACar.entities.concretes.Rental;
 
 @Service
 public class CarManager implements CarService {
 
-	@Autowired
+
 	private CarRepository carRepository;
-	@Autowired
 	private ModelMapperService modelMapperService;
+	private BrandRepository brandRepository;
+	private ColorRepository colorRepository;
 	
+	@Autowired
+	public CarManager(CarRepository carRepository, ModelMapperService modelMapperService,
+			BrandRepository brandRepository, ColorRepository colorRepository) {
+
+		this.carRepository = carRepository;
+		this.modelMapperService = modelMapperService;
+		this.brandRepository = brandRepository;
+		this.colorRepository = colorRepository;
+	}
 
 	@Override
 	public Result add(CreateCarRequest createCarRequest) {
-
 		checkIfBrandLimitExceed(createCarRequest.getBrandId());
+		checkIfBrandIdExist(createCarRequest.getBrandId());
+		checkIfColorIdExists(createCarRequest.getColorId());
+		
 		Car car = this.modelMapperService.forRequest().map(createCarRequest, Car.class);
 		car.setState(1);
 		this.carRepository.save(car);
@@ -50,20 +67,22 @@ public class CarManager implements CarService {
 				.map(car -> this.modelMapperService.forResponse().map(car, GetAllCarsResponse.class))
 				.collect(Collectors.toList());
 		
-		return new SuccessDataResult<List<GetAllCarsResponse>>(response, "CAR.LISTED");
+		return new SuccessDataResult<List<GetAllCarsResponse>>(response,"CARS.LISTED");
 	}
 
 
 	@Override
 	public DataResult<GetCarResponse> getById(int id) {
-
+		checkIfCarIdExists(id);
+		
 		Car car = this.carRepository.findById(id);
 		GetCarResponse response = this.modelMapperService.forResponse().map(car, GetCarResponse.class);
-		return new SuccessDataResult<GetCarResponse>(response, "CAR.LISTED");
+		return new SuccessDataResult<GetCarResponse>(response);
 	}
 
 	@Override
 	public Result delete(DeleteCarRequest deleteCarRequest) {
+		checkIfCarIdExists(deleteCarRequest.getId());
 		this.carRepository.deleteById(deleteCarRequest.getId());
 		return new SuccessResult("CAR.DELETED");
 
@@ -71,11 +90,16 @@ public class CarManager implements CarService {
 
 	@Override
 	public Result update(UpdateCarRequest updateCarRequest) {
-		checkIfIdExists(updateCarRequest.getId());
+		
+		checkIfCarIdExists(updateCarRequest.getId());
+		checkIfBrandIdExist(updateCarRequest.getBrandId());
+		checkIfColorIdExists(updateCarRequest.getColorId());  
+		checkIfBrandIdSame(updateCarRequest.getId(), updateCarRequest.getBrandId()); //ismini düzeltcem
+		
 		Car car = this.modelMapperService.forRequest().map(updateCarRequest, Car.class);
 		Car carFromDb = this.carRepository.findById(car.getId());
+		car.setState(carFromDb.getState()); //bunu da kontrol et
 
-		car.setState(carFromDb.getState());
 		this.carRepository.save(car);
 		return new SuccessResult("CAR.UPDATED");
 
@@ -150,23 +174,42 @@ public class CarManager implements CarService {
 
 /*************************************************************************************************/
 
-	private void checkIfBrandLimitExceed(int id) {
-		List<Car> result = carRepository.getByBrandId(id);
-		if (result.size() > 10) {
+	private void checkIfBrandLimitExceed(int brandId) {
+		List<Car> result = carRepository.getByBrandId(brandId);
+		if (result.size() > 1) {
 			throw new BusinessException("NO.MORE.BRANDS.CAN.BE.ADDED");
 		}
 	}
 
-	private void checkIfIdExists(int id) {
+	private void checkIfCarIdExists(int id) {
 		Car car = this.carRepository.findById(id);
 		if (car == null) {
 			throw new BusinessException("THERE.IS.NO.CAR");
 		}
 	}
+	
+	private void checkIfBrandIdSame(int carId,int brandId) { //ismi düzelt
+		Car car = this.carRepository.findById(carId);
+		Brand brand = this.brandRepository.findById(brandId);
+		if(car.getBrand().getId() != brand.getId()) {
+			checkIfBrandLimitExceed(brandId);
+		}
+	}
+	
+	private void checkIfBrandIdExist(int brandId) {
+		Brand brand = this.brandRepository.findById(brandId);
+		if(brand == null) {
+			throw new BusinessException("THERE.IS.NOT.BRAND");
+		}
+	}
+	
+	private void checkIfColorIdExists(int colorId) {
+		Color color = this.colorRepository.findById(colorId);
+		if(color==null) {
+			throw new BusinessException("THERE.IS.NOT.COLOR");
+		}
+		
+	}
 
-	// BİR MARKADAN EN FAZLA 5 ADET OLABİLR
-	// arabalar bakıma gönderilmelidir carId var
-	// araabalara mevcut km plaka bilgisi
-	//
 
 }

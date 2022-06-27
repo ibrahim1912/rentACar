@@ -23,12 +23,16 @@ import com.kodlamaio.rentACar.entities.concretes.Address;
 
 @Service
 public class AddressManager implements AddressService {
-
-	@Autowired
+	
 	private AddressRepository addressRepository;
+	private ModelMapperService modelMapperService;
 
 	@Autowired
-	private ModelMapperService modelMapperService;
+	public AddressManager(AddressRepository addressRepository, ModelMapperService modelMapperService) {
+		
+		this.addressRepository = addressRepository;
+		this.modelMapperService = modelMapperService;
+	}
 
 	@Override
 	public Result add(CreateAddressRequest createAddressRequest) {

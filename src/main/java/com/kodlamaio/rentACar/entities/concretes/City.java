@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -18,16 +19,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "cities") // Sehir Tablosu
+@Table(name = "cities") 
 public class City {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	
-	@Column(name="id") //Şehrin id si
+	@Column(name="id") 
 	private int id;
 	
-	@Column(name="name") // Şehrin ismi
+	@Column(name="name") 
 	private String name;
 
 	@OneToMany(mappedBy = "city") // Bir şehrin bir çok arabası olabililr
@@ -37,5 +38,7 @@ public class City {
 	private List<Rental> pickUpCityRentals;
 	
 	@OneToMany(mappedBy = "returnCityId")
-	private List<Rental> rentalCityRentals;
+	private List<Rental> returnCityRentals;
+	
+	
 }

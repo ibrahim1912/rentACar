@@ -1,4 +1,4 @@
-package com.kodlamaio.rentACar.business.responses.additionalFeautureItems;
+package com.kodlamaio.rentACar.business.requests.additionalItems;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetAdditionalFeatureItemResponse {
+public class CreateAdditionalItemRequest {
 
-	private int id;
 	private String name;
 	private double price;
+	
 }

@@ -7,8 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -22,30 +20,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name= "additional_feature_services")
+@Table(name="additional_items")
+public class AdditionalItem {
 
-public class AdditionalFeatureService {
-	
 	@Id()
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id")
 	private int id;
 	
-	@Column(name="total_price")
-	private double totalPrice;
+	@Column(name="name")
+	private String name;
 	
-	@Column(name="total_day")  
-	private int totalDay;
+	@Column(name="price")
+	private double price;
 	
-	@ManyToOne
-	@JoinColumn(name = "rental_id") // id ye göre rental tablosu
-	private Rental rental;
-	
-	@ManyToOne
-	@JoinColumn(name = "additional_feature_item_id") // id ye göre addionalFeatureItem tablosu
-	private AdditionalFeatureItem additionalFeatureItem;
-	
-//	@OneToMany(mappedBy = "additionalFeatureService")
-//	private List<Invoice> invoices;
-	
+	@OneToMany(mappedBy = "additionalItem")
+	private List<OrderedAdditionalItem> orderedAdditionalItems;
 }

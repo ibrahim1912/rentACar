@@ -1,6 +1,7 @@
 package com.kodlamaio.rentACar.business.responses.maintenances;
 
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import lombok.AllArgsConstructor;
@@ -12,8 +13,8 @@ import lombok.NoArgsConstructor;
 public class GetAllMaintenancesResponse {
 
 	private int id;
-	private Date datesent;
-	private Date datereturned;
+	private LocalDate sentDate;
+	private LocalDate returnedDate;
 	private int carId;
 	private String description;
 	private int state;

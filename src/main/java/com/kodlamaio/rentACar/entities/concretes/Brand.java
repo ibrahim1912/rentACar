@@ -20,20 +20,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-
-@Table(name="brands")
+@Table(name = "brands")
 public class Brand {
-	
+
 	@Id()
-	@GeneratedValue(strategy = GenerationType.IDENTITY) //id yi nasıl üreteyim bir bir arttır
-	@Column(name="id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
 	private int id;
-	
-	@Column(name="name")
+
+	@Column(name = "name")
 	private String name;
-	
+
 	@OneToMany(mappedBy = "brand")
-	List<Car> cars;  //1 brand çok araba  bmw marka 1 tane var bir sürü bmw olabilir araba yani
-	
-	
+	List<Car> cars;
+
 }

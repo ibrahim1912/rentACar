@@ -22,7 +22,6 @@ public interface RentalService {
 	DataResult<List<GetAllRentalsResponse>> getAll();
 	DataResult<GetRentalResponse> getById(int id);
 	
-	DataResult<List<GetAllRentalsResponse>> getAllSorted(); 
 	
 	
 }

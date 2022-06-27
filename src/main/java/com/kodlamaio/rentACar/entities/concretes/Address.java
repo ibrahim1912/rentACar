@@ -33,16 +33,10 @@ public class Address {
 	private String invoiceAddress;
 	
 	@ManyToOne
-	@JoinColumn(name = "user_id")
-	private User user;
+	@JoinColumn(name = "customer_id")
+	private Customer customer;
 	
-//	@OneToOne
-//	@JoinColumn(name = "town_id")
-//	private Town town;
-	
-//	@ManyToOne
-//	@JoinColumn(name = "city_id")
-//	private City city;
+
 
 	
 

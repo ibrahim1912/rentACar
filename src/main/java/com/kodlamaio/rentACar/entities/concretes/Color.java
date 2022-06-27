@@ -20,23 +20,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-
-@Table(name="colors")
+@Table(name = "colors")
 public class Color {
 
 	@Id()
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="id")
+	@Column(name = "id")
 	private int id;
-	
-	@Column(name="name")
+
+	@Column(name = "name")
 	private String name;
-	
+
 	@OneToMany(mappedBy = "color")
 	List<Car> cars;
 }
-
-
-//listeme id ye göre listemle
-//insert update delete 
-//getbyid 1 numaralı id yi ver bmw gelcek

@@ -9,8 +9,8 @@ import com.kodlamaio.rentACar.business.responses.invoices.GetAllInvoicesResponse
 import com.kodlamaio.rentACar.business.responses.invoices.GetInvoiceResponse;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
-import com.kodlamaio.rentACar.entities.concretes.AdditionalFeatureItem;
-import com.kodlamaio.rentACar.entities.concretes.AdditionalFeatureService;
+import com.kodlamaio.rentACar.entities.concretes.AdditionalItem;
+import com.kodlamaio.rentACar.entities.concretes.OrderedAdditionalItem;
 
 public interface InvoiceService {
 
@@ -24,6 +24,6 @@ public interface InvoiceService {
 
 	DataResult<GetInvoiceResponse> getById(int id);
 
-	DataResult<List<AdditionalFeatureItem>> getAllAdditionalFeatureItemsTest(int id);
+	DataResult<List<AdditionalItem>> getAllAdditionalFeatureItemsTest(int id);
 
 }

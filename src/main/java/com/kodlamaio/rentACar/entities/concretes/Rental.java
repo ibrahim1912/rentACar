@@ -57,11 +57,11 @@ public class Rental {
 	private City returnCityId;
 	
 	@OneToMany(mappedBy = "rental")
-	private List<AdditionalFeatureService> additionalFeatureServices;
+	private List<OrderedAdditionalItem> additionalFeatureServices;
 	
 	@ManyToOne
-	@JoinColumn(name = "user_id")
-	private User user;
+	@JoinColumn(name = "customer_id")
+	private Customer customer;
 	
 	@OneToMany(mappedBy = "rental")
 	private List<Invoice> invoices;

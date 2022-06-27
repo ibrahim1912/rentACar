@@ -11,8 +11,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,32 +19,36 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name= "ordered_additional_Items")
 
-@Table(name="invoices")
-public class Invoice {
+public class OrderedAdditionalItem { //OrderedAdditionalItem
 	
 	@Id()
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id")
 	private int id;
 	
-	@Column(name="invoice_number")
-	private int invoiceNumber;
-	
-	@Column(name="current_date")
-	private LocalDate currentDate;
-	
 	@Column(name="total_price")
 	private double totalPrice;
 	
+	@Column(name="total_day")  
+	private int totalDay;
+	
+	@Column(name="pick_up_date")
+	private LocalDate pickUpDate;
+	
+	@Column(name="return_date")
+	private LocalDate returnDate;
+	
 	@ManyToOne
-	@JoinColumn(name = "rentalId")
+	@JoinColumn(name = "rental_id") // id ye göre rental tablosu
 	private Rental rental;
 	
-	@Column(name="state")
-	private int state;  // 0 invoice var -- 1 invoice iptal edilmiş //state olrak değiştir.
+	@ManyToOne
+	@JoinColumn(name = "additional_item_id") // id ye göre additionalItem tablosu
+	private AdditionalItem additionalItem;
 	
-//	@ManyToOne
-//	@JoinColumn(name = "additionalFeatureServiceId")
-//	private AdditionalFeatureService additionalFeatureService;
+//	@OneToMany(mappedBy = "additionalFeatureService")
+//	private List<Invoice> invoices;
+	
 }

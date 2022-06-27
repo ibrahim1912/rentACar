@@ -22,31 +22,28 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-
-@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "cars")// Arabaların tablosu
-//@JsonIgnoreProperties({"hibernateLazyInitializer","handler","maintenances","rentals"})
-
+@Entity
+@Table(name = "cars")
 public class Car {
 	
 	@Id()
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="id") //Tablonun id alanı
+	@Column(name="id")
 	private int id;
 	
-	@Column(name="description") //Açıklama
+	@Column(name="description") 
 	private String description;
 	
-	@Column(name="dailyPrice") //Arabanın günlük fiyatı
+	@Column(name="dailyPrice") 
 	private double dailyPrice;
 	
-	@Column(name="plate") // Arabanın plakası
+	@Column(name="plate") 
 	private String plate;
 	
-	@Column(name="kilometer") // Arabanın kilometresi
+	@Column(name="kilometer") 
 	private int kilometer;
 	
 	@Column(name="state") //1 Available 2 Maintenance 3 Rent

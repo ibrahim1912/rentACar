@@ -13,6 +13,7 @@ public class GetAllCarsResponse {
 	private double dailyPrice;
 	private String description;
 	private String brandName;
+	private int brandId;
 	private String colorName;
 	private int kilometer;
 	private int state;
