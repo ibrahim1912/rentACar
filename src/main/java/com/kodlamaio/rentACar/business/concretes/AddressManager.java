@@ -1,7 +1,6 @@
 package com.kodlamaio.rentACar.business.concretes;
 
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,38 +19,29 @@ import com.kodlamaio.rentACar.core.utilities.results.Result;
 import com.kodlamaio.rentACar.core.utilities.results.SuccessDataResult;
 import com.kodlamaio.rentACar.core.utilities.results.SuccessResult;
 import com.kodlamaio.rentACar.dataAccess.abstracts.AddressRepository;
-import com.kodlamaio.rentACar.dataAccess.abstracts.CorporateCustomerRepository;
-import com.kodlamaio.rentACar.dataAccess.abstracts.IndividualCustomerRepository;
+import com.kodlamaio.rentACar.dataAccess.abstracts.CustomerRepository;
 import com.kodlamaio.rentACar.entities.concretes.Address;
-import com.kodlamaio.rentACar.entities.concretes.CorporateCustomer;
-import com.kodlamaio.rentACar.entities.concretes.IndividualCustomer;
+import com.kodlamaio.rentACar.entities.concretes.Customer;
 
 @Service
 public class AddressManager implements AddressService {
 	
 	private AddressRepository addressRepository;
 	private ModelMapperService modelMapperService;
-	private IndividualCustomerRepository individualCustomerRepository;
-	private CorporateCustomerRepository corporateCustomerRepository;
-
+	private CustomerRepository customerRepository;
 	
+	@Autowired
 	public AddressManager(AddressRepository addressRepository, ModelMapperService modelMapperService,
-			IndividualCustomerRepository individualCustomerRepository,
-			CorporateCustomerRepository corporateCustomerRepository) {
+			CustomerRepository customerRepository) {
 	
 		this.addressRepository = addressRepository;
 		this.modelMapperService = modelMapperService;
-		this.individualCustomerRepository = individualCustomerRepository;
-		this.corporateCustomerRepository = corporateCustomerRepository;
+		this.customerRepository = customerRepository;
 	}
-
-
-	
 
 	@Override
 	public Result add(CreateAddressRequest createAddressRequest) {
-		checkIfCorporateCustomerIdExists(createAddressRequest.getCustomerId());
-		checkIfIndividualCustomerIdExists(createAddressRequest.getCustomerId());
+		checkIfCustomerIdExists(createAddressRequest.getCustomerId());
 		
 		Address address = this.modelMapperService.forRequest().map(createAddressRequest, Address.class);
 		address.setInvoiceAddress(createAddressRequest.getContactAddress());
@@ -59,10 +49,10 @@ public class AddressManager implements AddressService {
 		return new SuccessResult("ADDRESS.ADDED");
 	}
 	
+	
 	@Override  //fatura adresi farklıysa ekler
 	public Result addInvoiceAddressIfDifferent(CreateAddressRequest createAddressRequest) {
-		checkIfCorporateCustomerIdExists(createAddressRequest.getCustomerId());
-		checkIfIndividualCustomerIdExists(createAddressRequest.getCustomerId());
+		checkIfCustomerIdExists(createAddressRequest.getCustomerId());
 		
 		Address address = this.modelMapperService.forRequest().map(createAddressRequest, Address.class);
 		this.addressRepository.save(address);
@@ -80,8 +70,7 @@ public class AddressManager implements AddressService {
 	@Override //her ikisini de güncellenir ayrı ayrı yazmak gerekiyor
 	public Result update(UpdateAddressRequest updateAddressRequest) {
 		checkIfAddressIdExists(updateAddressRequest.getId());
-		checkIfIndividualCustomerIdExists(updateAddressRequest.getCustomerId());
-		checkIfCorporateCustomerIdExists(updateAddressRequest.getCustomerId());
+		checkIfCustomerIdExists(updateAddressRequest.getCustomerId());
 		
 		Address address = this.modelMapperService.forRequest().map(updateAddressRequest, Address.class);
 		this.addressRepository.save(address);
@@ -89,45 +78,16 @@ public class AddressManager implements AddressService {
 	}
 	
 	
-	@Override //ileteşim adresi güncellenince ikiside güncelleniyor
-	public Result updateToSame(UpdateAddressRequest updateAddressRequest) {
+	@Override //iletişim adresi güncellenince ikiside güncelleniyor
+	public Result updateIfBothAreSame(UpdateAddressRequest updateAddressRequest) {
 		checkIfAddressIdExists(updateAddressRequest.getId());
-		checkIfIndividualCustomerIdExists(updateAddressRequest.getCustomerId());
-		checkIfCorporateCustomerIdExists(updateAddressRequest.getCustomerId());
+		checkIfCustomerIdExists(updateAddressRequest.getCustomerId());
 		
 		Address address = this.modelMapperService.forRequest().map(updateAddressRequest, Address.class);
 		address.setInvoiceAddress(updateAddressRequest.getContactAddress());
 		this.addressRepository.save(address);
 		return new SuccessResult("ADDRESS.UPDATED");
 	}
-
-	@Override // sadece iletişim adresi güncellenir Fatura aynı kalır değişmez
-	public Result updateToContactAddress(UpdateAddressRequest updateAddressRequest) {
-		checkIfAddressIdExists(updateAddressRequest.getId());
-		checkIfIndividualCustomerIdExists(updateAddressRequest.getCustomerId());
-		checkIfCorporateCustomerIdExists(updateAddressRequest.getCustomerId());
-		
-		Address address = this.modelMapperService.forRequest().map(updateAddressRequest, Address.class);
-		Address addressFromRespository = this.addressRepository.findById(updateAddressRequest.getId());
-		address.setInvoiceAddress(addressFromRespository.getInvoiceAddress());
-		this.addressRepository.save(address);
-		return new SuccessResult("ADDRESS.UPDATED");
-	}
-	
-	@Override // sadece fatura adresi güncellenir 
-	public Result updateToInvoiceAddress(UpdateAddressRequest updateAddressRequest) {
-		
-		checkIfAddressIdExists(updateAddressRequest.getId());
-		checkIfIndividualCustomerIdExists(updateAddressRequest.getCustomerId());
-		checkIfCorporateCustomerIdExists(updateAddressRequest.getCustomerId());
-		
-		Address address = this.modelMapperService.forRequest().map(updateAddressRequest, Address.class);
-		Address addressFromRespository = this.addressRepository.findById(updateAddressRequest.getId());
-		address.setContactAddress(addressFromRespository.getContactAddress());
-		this.addressRepository.save(address);
-		return new SuccessResult("ADDRESS.UPDATED");
-	}
-	
 
 	@Override
 	public DataResult<List<GetAllAddressesResponse>> getAll() {
@@ -155,17 +115,11 @@ public class AddressManager implements AddressService {
 		}
 	}
 	
-	private void checkIfIndividualCustomerIdExists(int customerId) {
-		IndividualCustomer customer = this.individualCustomerRepository.findByIndividualCustomerId(customerId);
-		if(customer == null) {
-			throw new BusinessException("THERE.IS.NOT.A.INDIVIDUAL.CUSTOMER");
-		}
-	}
 	
-	private void checkIfCorporateCustomerIdExists(int customerId) {
-		CorporateCustomer customer = this.corporateCustomerRepository.findByCorporateCustomerId(customerId);
+	private void checkIfCustomerIdExists(int id) {
+		Customer customer = this.customerRepository.findById(id);
 		if(customer == null) {
-			throw new BusinessException("THERE.IS.NOT.A.CORPORATE.CUSTOMER");
+			throw new BusinessException("CUSTOMER.NOT.EXISTS");
 		}
 	}
 	

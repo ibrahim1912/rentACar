@@ -16,9 +16,8 @@ public interface AddressService {
 	Result addInvoiceAddressIfDifferent(CreateAddressRequest createAddressRequest);
 	Result delete(DeleteAddressRequest deleteAddressRequest);
 	Result update(UpdateAddressRequest updateAddressRequest);
-	Result updateToSame(UpdateAddressRequest updateAddressRequest);
-	Result updateToContactAddress(UpdateAddressRequest updateAddressRequest);
-	Result updateToInvoiceAddress(UpdateAddressRequest updateAddressRequest);
+	Result updateIfBothAreSame(UpdateAddressRequest updateAddressRequest);
+
 	DataResult<List<GetAllAddressesResponse>> getAll();
 	DataResult<GetAddressResponse> getById(int id);
 }

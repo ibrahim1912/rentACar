@@ -23,16 +23,21 @@ import com.kodlamaio.rentACar.core.utilities.results.Result;
 @RequestMapping("/api/addresses")
 public class AddressesController {
 	
-	@Autowired
+
 	private AddressService addressService;
 	
-	
+	@Autowired
+	public AddressesController(AddressService addressService) {
+		this.addressService = addressService;
+	}
+
 	@PostMapping("/add")
 	public Result add(@RequestBody CreateAddressRequest createAddressRequest) {
 		return this.addressService.add(createAddressRequest);
 	}
 	
-	@PostMapping("/addbilladdressifdifferent")
+	
+	@PostMapping("/addinvoiceaddressifdifferent")
 	public Result addInvoiceAddressIfDifferent(@RequestBody CreateAddressRequest createAddressRequest) {
 		return this.addressService.addInvoiceAddressIfDifferent(createAddressRequest);
 	}
@@ -42,20 +47,10 @@ public class AddressesController {
 		return this.addressService.update(updateAddressRequest);
 	}
 	
-	@PostMapping("/updatetosame")
-	public Result updateToSame(@RequestBody UpdateAddressRequest updateAddressRequest) {
-		return this.addressService.updateToSame(updateAddressRequest);
+	@PostMapping("/updateifbotharesame")
+	public Result updateIfBothAreSame(@RequestBody UpdateAddressRequest updateAddressRequest) {
+		return this.addressService.updateIfBothAreSame(updateAddressRequest);
 	}
-	
-	@PostMapping("/updatetocontactaddress")
-	public Result updateToContactAddress(@RequestBody UpdateAddressRequest updateAddressRequest) {
-		return this.addressService.updateToContactAddress(updateAddressRequest);
-	}
-	@PostMapping("/updatetoinvoiceddress")
-	public Result updateToInvoiceAddress(@RequestBody UpdateAddressRequest updateAddressRequest) {
-		return this.addressService.updateToInvoiceAddress(updateAddressRequest);
-	}
-	
 	
 	
 	@PostMapping("/delete")
