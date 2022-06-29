@@ -121,16 +121,16 @@ public class InvoiceManager implements InvoiceService {
 
 	private double calculateTotalPrice(int rentalId) {
 		Rental rental = this.rentalService.getByRentalId(rentalId);
-		double price = calculateTotalPriceOfAdditionalFeatureServiceByRentalId(rentalId);
+		double price = calculateTotalPriceOfOrderedAdditionalItemByRentalId(rentalId);
 		double totalPrice = rental.getTotalPrice() + price;
 		return totalPrice;
 	}
 
-	private double calculateTotalPriceOfAdditionalFeatureServiceByRentalId(int id) {
+	private double calculateTotalPriceOfOrderedAdditionalItemByRentalId(int id) {
 		Rental rental = this.rentalService.getByRentalId(id);
-		List<OrderedAdditionalItem> liste = rental.getAdditionalFeatureServices();
+		List<OrderedAdditionalItem> lists = rental.getOrderedAdditionalItems();
 		double totalPrice = 0;
-		for (OrderedAdditionalItem additionalFeatureService : liste) {
+		for (OrderedAdditionalItem additionalFeatureService : lists) {
 			totalPrice += additionalFeatureService.getTotalPrice();
 		}
 		return totalPrice;
@@ -161,7 +161,7 @@ public class InvoiceManager implements InvoiceService {
 	private void checkIfRentalIdExists(int rentalId) {
 		Rental rental = this.rentalService.getByRentalId(rentalId);
 		if(rental == null) {
-			throw new BusinessException("THERE.IS.NO.RENTED.CAR");
+			throw new BusinessException("THERE.IS.NO.RENTED.CAR2");
 		}
 	}
 	
