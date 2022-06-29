@@ -31,22 +31,28 @@ public class RentalsController {
 	
 	@PostMapping("/addforindividualcustomer")
 	public Result addForIndividualCustomers(@RequestBody CreateRentalRequest createRentalRequest) {
-		return this.rentalService.addForIndividualCustomers(createRentalRequest);
+		return this.rentalService.addForIndividualCustomer(createRentalRequest);
 	}
 	
 	@PostMapping("/addforcorporatecustomer")
 	public Result addForCorporateCustomers(@RequestBody CreateRentalRequest createRentalRequest) {
-		return this.rentalService.addForCorporateCustomers(createRentalRequest);
+		return this.rentalService.addForCorporateCustomer(createRentalRequest);
 	}
 	
 	@PostMapping("/delete")
 	public Result delete(@RequestBody DeleteRentalRequest deleteRentalRequest) {
 		return this.rentalService.delete(deleteRentalRequest);
 	}
-	@PostMapping("/update")
-	public Result update(@RequestBody UpdateRentalRequest updateRentalRequest) {
-		return this.rentalService.update(updateRentalRequest);
+	
+	@PostMapping("/updateforindividualcustomer")
+	public Result updateForIndividualCustomer(@RequestBody UpdateRentalRequest updateRentalRequest) {
+		return this.rentalService.updateForIndividualCustomer(updateRentalRequest);
 	}
+	@PostMapping("/updateforcorporatecustomer")
+	public Result updateForCorporateCustomer(@RequestBody UpdateRentalRequest updateRentalRequest) {
+		return this.rentalService.updateForCorporateCustomer(updateRentalRequest);
+	}
+	
 	@GetMapping("/getall")
 	public DataResult<List<GetAllRentalsResponse>> getAll() {
 		return this.rentalService.getAll();

@@ -25,7 +25,7 @@ import com.kodlamaio.rentACar.core.utilities.results.Result;
 public class CitiesController {
 	
 	private CityService cityService;
-
+	
 	public CitiesController(CityService cityService) {
 		this.cityService = cityService;
 	}

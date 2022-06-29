@@ -21,11 +21,11 @@ import com.kodlamaio.rentACar.core.utilities.results.Result;
 
 @RestController
 @RequestMapping("/api/maintenances")
-public class MaintenanceController {
+public class MaintenancesController {
 
 	private MaintenanceService maintenanceService;
 
-	public MaintenanceController(MaintenanceService maintenanceService) {
+	public MaintenancesController(MaintenanceService maintenanceService) {
 		this.maintenanceService = maintenanceService;
 	}
 

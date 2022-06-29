@@ -43,7 +43,7 @@ public class CarsController {
 	}
 	
 	@PostMapping("/update")
-	public Result update(@RequestBody UpdateCarRequest updateCarRequest) {
+	public Result update(@RequestBody @Valid UpdateCarRequest updateCarRequest) {
 		return this.carService.update(updateCarRequest);
 	}
 	

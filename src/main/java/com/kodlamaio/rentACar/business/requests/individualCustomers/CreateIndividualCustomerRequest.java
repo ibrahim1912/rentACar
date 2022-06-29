@@ -1,7 +1,5 @@
 package com.kodlamaio.rentACar.business.requests.individualCustomers;
 
-
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;

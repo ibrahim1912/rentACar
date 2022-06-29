@@ -13,7 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class CreateBrandRequest { //ekleme işlemi create tir
+public class CreateBrandRequest { 
+	
 	@NotEmpty
 	@NotBlank
 	@Size(min=3,max=20)
