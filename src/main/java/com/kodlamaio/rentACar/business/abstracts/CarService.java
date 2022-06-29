@@ -9,6 +9,7 @@ import com.kodlamaio.rentACar.business.responses.cars.GetAllCarsResponse;
 import com.kodlamaio.rentACar.business.responses.cars.GetCarResponse;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
+import com.kodlamaio.rentACar.entities.concretes.Car;
 
 
 
@@ -29,6 +30,7 @@ public interface CarService {
 	DataResult<List<GetAllCarsResponse>> getByBrandAndColorName(String brandName,String colorName);
 	DataResult<List<GetAllCarsResponse>> getDailyPriceGreaterThan(double dailyPrice);
 	
+	public Car getByCarId(int carId);
 	
 	
 }

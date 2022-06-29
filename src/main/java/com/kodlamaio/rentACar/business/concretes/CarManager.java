@@ -8,7 +8,9 @@ import org.hibernate.annotations.Check;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kodlamaio.rentACar.business.abstracts.BrandService;
 import com.kodlamaio.rentACar.business.abstracts.CarService;
+import com.kodlamaio.rentACar.business.abstracts.ColorService;
 import com.kodlamaio.rentACar.business.requests.cars.CreateCarRequest;
 import com.kodlamaio.rentACar.business.requests.cars.DeleteCarRequest;
 import com.kodlamaio.rentACar.business.requests.cars.UpdateCarRequest;
@@ -34,23 +36,23 @@ public class CarManager implements CarService {
 
 	private CarRepository carRepository;
 	private ModelMapperService modelMapperService;
-	private BrandRepository brandRepository;
-	private ColorRepository colorRepository;
+	private BrandService brandService;
+	private ColorService colorService;
 	
 	@Autowired
 	public CarManager(CarRepository carRepository, ModelMapperService modelMapperService,
-			BrandRepository brandRepository, ColorRepository colorRepository) {
+			BrandService brandService,ColorService colorService) {
 
 		this.carRepository = carRepository;
 		this.modelMapperService = modelMapperService;
-		this.brandRepository = brandRepository;
-		this.colorRepository = colorRepository;
+		this.brandService = brandService;
+		this.colorService = colorService;
 	}
 
 	@Override
 	public Result add(CreateCarRequest createCarRequest) {
 		checkIfBrandLimitExceed(createCarRequest.getBrandId());
-		checkIfBrandIdExist(createCarRequest.getBrandId());
+		checkIfBrandIdExists(createCarRequest.getBrandId());
 		checkIfColorIdExists(createCarRequest.getColorId());
 		checkIfCarPlateIsExists(createCarRequest.getPlate());
 		
@@ -93,7 +95,7 @@ public class CarManager implements CarService {
 	public Result update(UpdateCarRequest updateCarRequest) {
 		
 		checkIfCarIdExists(updateCarRequest.getId());
-		checkIfBrandIdExist(updateCarRequest.getBrandId());
+		checkIfBrandIdExists(updateCarRequest.getBrandId());
 		checkIfColorIdExists(updateCarRequest.getColorId());  
 		checkIfBrandIdSame(updateCarRequest.getId(), updateCarRequest.getBrandId()); 
 		checkIfCarPlateIsSame(updateCarRequest.getId(),updateCarRequest);
@@ -102,6 +104,13 @@ public class CarManager implements CarService {
 		this.carRepository.save(car);
 		return new SuccessResult("CAR.UPDATED");
 
+	}
+	
+	@Override
+	public Car getByCarId(int carId) {
+		checkIfCarIdExists(carId);
+		Car car = this.carRepository.findById(carId);
+		return car;
 	}
 
 	/*************************************************************************************************/
@@ -115,7 +124,7 @@ public class CarManager implements CarService {
 				.sorted(Comparator.comparing(GetAllCarsResponse::getMinFindeksScore).reversed())
 				.collect(Collectors.toList());
 
-		return new SuccessDataResult<List<GetAllCarsResponse>>(response, "CAR.LISTED");
+		return new SuccessDataResult<List<GetAllCarsResponse>>(response, "CARS.LISTED");
 	}
 
 	@Override
@@ -127,7 +136,7 @@ public class CarManager implements CarService {
 						.thenComparing(GetAllCarsResponse::getKilometer).reversed())
 				.collect(Collectors.toList());
 
-		return new SuccessDataResult<List<GetAllCarsResponse>>(response, "CAR.LISTED");
+		return new SuccessDataResult<List<GetAllCarsResponse>>(response, "CARS.LISTED");
 	}
 
 	@Override
@@ -137,7 +146,7 @@ public class CarManager implements CarService {
 				.map(car -> this.modelMapperService.forResponse().map(car, GetAllCarsResponse.class))
 				.filter(car -> car.getState() == state)
 				.collect(Collectors.toList());
-		return new SuccessDataResult<List<GetAllCarsResponse>>(response, "CAR.LISTED");
+		return new SuccessDataResult<List<GetAllCarsResponse>>(response, "CARS.LISTED");
 	}
 
 	@Override
@@ -146,7 +155,7 @@ public class CarManager implements CarService {
 		List<GetAllCarsResponse> response = cars.stream()
 				.map(car -> this.modelMapperService.forResponse().map(car, GetAllCarsResponse.class))
 				.filter(car -> cityName.equals(car.getCityName())).collect(Collectors.toList());
-		return new SuccessDataResult<List<GetAllCarsResponse>>(response, "CAR.LISTED");
+		return new SuccessDataResult<List<GetAllCarsResponse>>(response, "CARS.LISTED");
 	}
 
 	@Override
@@ -156,7 +165,7 @@ public class CarManager implements CarService {
 				.map(car -> this.modelMapperService.forResponse().map(car, GetAllCarsResponse.class))
 				.filter(car -> brandName.equals(car.getBrandName()) && colorName.equals(car.getColorName()))
 				.collect(Collectors.toList());
-		return new SuccessDataResult<List<GetAllCarsResponse>>(response, "CAR.LISTED");
+		return new SuccessDataResult<List<GetAllCarsResponse>>(response, "CARS.LISTED");
 	}
 
 	@Override
@@ -166,7 +175,7 @@ public class CarManager implements CarService {
 				.map(car -> this.modelMapperService.forResponse().map(car, GetAllCarsResponse.class))
 				.filter(car -> car.getDailyPrice() > dailyPrice)
 				.collect(Collectors.toList());
-		return new SuccessDataResult<List<GetAllCarsResponse>>(response, "CAR.LISTED");
+		return new SuccessDataResult<List<GetAllCarsResponse>>(response, "CARS.LISTED");
 	}
 	
 	
@@ -174,7 +183,7 @@ public class CarManager implements CarService {
 /*************************************************************************************************/
 
 	private void checkIfBrandLimitExceed(int brandId) {
-		List<Car> result = carRepository.getByBrandId(brandId);
+		List<Car> result = carRepository.findByBrandId(brandId);
 		if (result.size() > 10) {
 			throw new BusinessException("NO.MORE.BRANDS.CAN.BE.ADDED");
 		}
@@ -189,21 +198,22 @@ public class CarManager implements CarService {
 	
 	private void checkIfBrandIdSame(int carId,int brandId) { 
 		Car car = this.carRepository.findById(carId);
-		Brand brand = this.brandRepository.findById(brandId);
+		Brand brand = this.brandService.getByBrandId(brandId);
+		
 		if(car.getBrand().getId() != brand.getId()) {
 			checkIfBrandLimitExceed(brandId);
 		}
 	}
 	
-	private void checkIfBrandIdExist(int brandId) {
-		Brand brand = this.brandRepository.findById(brandId);
+	private void checkIfBrandIdExists(int brandId) {
+		Brand brand = this.brandService.getByBrandId(brandId);
 		if(brand == null) {
 			throw new BusinessException("THERE.IS.NOT.BRAND");
 		}
 	}
 	
 	private void checkIfColorIdExists(int colorId) {
-		Color color = this.colorRepository.findById(colorId);
+		Color color = this.colorService.getByColorId(colorId);
 		if(color==null) {
 			throw new BusinessException("THERE.IS.NOT.COLOR");
 		}
@@ -222,6 +232,8 @@ public class CarManager implements CarService {
 			checkIfCarPlateIsExists(updateCarRequest.getPlate());
 		}
 	}
+
+	
 
 
 }

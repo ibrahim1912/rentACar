@@ -79,6 +79,13 @@ public class ColorManager implements ColorService{
 		return new SuccessDataResult<GetColorResponse>(response);
 	}
 	
+	@Override
+	public Color getByColorId(int colorId) {
+		checkIfColorIdExists(colorId);
+		Color color = this.colorRepository.findById(colorId);
+		return color;
+	}
+	
 	private void checkIfColorIdExists(int id) {
 		Color color = this.colorRepository.findById(id);
 		if(color == null) {
@@ -92,5 +99,7 @@ public class ColorManager implements ColorService{
 			throw new BusinessException("COLOR.NAME.EXISTS");
 		}
 	}
+
+
 
 }

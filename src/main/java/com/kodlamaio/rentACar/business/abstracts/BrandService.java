@@ -23,4 +23,6 @@ public interface BrandService {
 
 	DataResult<List<GetAllBrandsResponse>> getAll();
 	DataResult<GetBrandResponse> getById(int id);
+	
+	public Brand getByBrandId(int brandId);
 }

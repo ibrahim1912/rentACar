@@ -115,7 +115,6 @@ public class AddressManager implements AddressService {
 		}
 	}
 	
-	
 	private void checkIfCustomerIdExists(int id) {
 		Customer customer = this.customerRepository.findById(id);
 		if(customer == null) {
@@ -123,5 +122,4 @@ public class AddressManager implements AddressService {
 		}
 	}
 	
-
 }

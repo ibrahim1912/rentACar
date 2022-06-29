@@ -8,12 +8,14 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kodlamaio.rentACar.business.abstracts.AdditionalItemService;
 import com.kodlamaio.rentACar.business.abstracts.OrderedAdditionalItemService;
+import com.kodlamaio.rentACar.business.abstracts.RentalService;
 import com.kodlamaio.rentACar.business.requests.orderedAdditionalItems.CreateOrderedAdditionalItemRequest;
 import com.kodlamaio.rentACar.business.requests.orderedAdditionalItems.DeleteOrderedAdditionalItemRequest;
 import com.kodlamaio.rentACar.business.requests.orderedAdditionalItems.UpdateOrderedAdditionalItemRequest;
-import com.kodlamaio.rentACar.business.responses.orderedAdditionalItems.GetAllOrderedAdditionalItemResponse;
-import com.kodlamaio.rentACar.business.responses.orderedAdditionalItems.GetOrderedAdditionalItemResponse;
+import com.kodlamaio.rentACar.business.responses.orderedAdditionalItems.GetAllOrderedAdditionalItemsResponse;
+import com.kodlamaio.rentACar.business.responses.orderedAdditionalItems.GetOrderedAdditionalItemsResponse;
 import com.kodlamaio.rentACar.core.utilities.exceptions.BusinessException;
 import com.kodlamaio.rentACar.core.utilities.mapping.ModelMapperService;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
@@ -32,18 +34,20 @@ public class OrderedAdditionalItemManager implements OrderedAdditionalItemServic
 
 	private OrderedAdditionalItemRepository orderedAdditionalItemRepository;
 	private ModelMapperService modelMapperService;
-	private AdditionalItemRepository additionalItemRepository;
-	private RentalRepository rentalRepository;
+	private AdditionalItemService additionalItemService;
+	private RentalService rentalService;
+	
 
 	@Autowired
 	public OrderedAdditionalItemManager(OrderedAdditionalItemRepository orderedAdditionalItemRepository,
-			ModelMapperService modelMapperService, AdditionalItemRepository additionalItemRepository,
-			RentalRepository rentalRepository) {
+			ModelMapperService modelMapperService,
+			RentalService rentalService,
+			AdditionalItemService additionalItemService) {
 
-		this.additionalItemRepository =additionalItemRepository;
 		this.modelMapperService = modelMapperService;
 		this.orderedAdditionalItemRepository = orderedAdditionalItemRepository;
-		this.rentalRepository = rentalRepository;
+		this.rentalService = rentalService;
+		this.additionalItemService = additionalItemService;
 	}
 
 	@Override
@@ -53,19 +57,20 @@ public class OrderedAdditionalItemManager implements OrderedAdditionalItemServic
 		checkIfAdditionalItemIdExists(createOrderedAdditionalItemRequest.getAdditionalItemId());
 		checkIfDatesAreCorrect(createOrderedAdditionalItemRequest.getPickUpDate(),createOrderedAdditionalItemRequest.getReturnDate());
 		
-		AdditionalItem additionalItem = this.additionalItemRepository
-				.findById(createOrderedAdditionalItemRequest.getAdditionalItemId());
+		AdditionalItem additionalItem = this.additionalItemService
+				.getByAdditionalItemId(createOrderedAdditionalItemRequest.getAdditionalItemId());
 		OrderedAdditionalItem orderedAdditionalItem = this.modelMapperService.forRequest()
 				.map(createOrderedAdditionalItemRequest, OrderedAdditionalItem.class);
 	
 	
 
 		orderedAdditionalItem.setTotalPrice(calculateTotalPrice(orderedAdditionalItem, additionalItem.getPrice()));
+		orderedAdditionalItem.setTotalDay(calculateTotalDays(orderedAdditionalItem));
+		
 		this.orderedAdditionalItemRepository.save(orderedAdditionalItem);
 		return new SuccessResult("ADDITIONAL.SERVICE.ADDED");
 	}
 
-	//burası kaldı
 	@Override
 	public Result update(UpdateOrderedAdditionalItemRequest updateAdditionalFeatureServiceRequest) {
 		
@@ -78,9 +83,10 @@ public class OrderedAdditionalItemManager implements OrderedAdditionalItemServic
 		OrderedAdditionalItem orderedAdditionalItem = this.modelMapperService.forRequest()
 				.map(updateAdditionalFeatureServiceRequest, OrderedAdditionalItem.class);
 		
-		AdditionalItem additionalItem = this.additionalItemRepository
-				.findById(orderedAdditionalItem.getAdditionalItem().getId());
+		AdditionalItem additionalItem = this.additionalItemService
+				.getByAdditionalItemId(orderedAdditionalItem.getAdditionalItem().getId());
 		orderedAdditionalItem.setTotalPrice(calculateTotalPrice(orderedAdditionalItem, additionalItem.getPrice()));
+		orderedAdditionalItem.setTotalDay(calculateTotalDays(orderedAdditionalItem));
 		this.orderedAdditionalItemRepository.save(orderedAdditionalItem);
 		return new SuccessResult("SERVICES.UPDATE");
 	}
@@ -94,24 +100,39 @@ public class OrderedAdditionalItemManager implements OrderedAdditionalItemServic
 	}
 
 	@Override
-	public DataResult<List<GetAllOrderedAdditionalItemResponse>> getAll() {
+	public DataResult<List<GetAllOrderedAdditionalItemsResponse>> getAll() {
 		List<OrderedAdditionalItem> additionalFeatureServices = this.orderedAdditionalItemRepository.findAll();
-		List<GetAllOrderedAdditionalItemResponse> response = additionalFeatureServices.stream()
+		List<GetAllOrderedAdditionalItemsResponse> response = additionalFeatureServices.stream()
 				.map(service -> this.modelMapperService.forResponse().map(service,
-						GetAllOrderedAdditionalItemResponse.class))
+						GetAllOrderedAdditionalItemsResponse.class))
 				.collect(Collectors.toList());
-		return new SuccessDataResult<List<GetAllOrderedAdditionalItemResponse>>(response, "SERVICES.LISTED");
+		return new SuccessDataResult<List<GetAllOrderedAdditionalItemsResponse>>(response, "SERVICES.LISTED");
 	}
 
 	@Override
-	public DataResult<GetOrderedAdditionalItemResponse> getById(int id) {
+	public DataResult<GetOrderedAdditionalItemsResponse> getById(int id) {
 		checkIfOrderedAdditionalItemIdExists(id);
 		
 		OrderedAdditionalItem orderedAdditionalItem = this.orderedAdditionalItemRepository.findById(id);
-		GetOrderedAdditionalItemResponse response = this.modelMapperService.forResponse()
-				.map(orderedAdditionalItem, GetOrderedAdditionalItemResponse.class);
-		return new SuccessDataResult<GetOrderedAdditionalItemResponse>(response);
+		GetOrderedAdditionalItemsResponse response = this.modelMapperService.forResponse()
+				.map(orderedAdditionalItem, GetOrderedAdditionalItemsResponse.class);
+		return new SuccessDataResult<GetOrderedAdditionalItemsResponse>(response);
 	}
+	
+	@Override
+	public OrderedAdditionalItem getByOrderedAdditionalItemId(int orderedAdditionalItemId) {
+		checkIfAdditionalItemIdExists(orderedAdditionalItemId);
+		OrderedAdditionalItem orderedAdditionalItem = this.orderedAdditionalItemRepository.findById(orderedAdditionalItemId);
+		return orderedAdditionalItem;
+	}
+	
+	@Override
+	public List<OrderedAdditionalItem> getByRentalId(int rentalId) {
+		checkIfRentalIdExists(rentalId);
+		List<OrderedAdditionalItem> orderedAdditionalItems = this.getByRentalId(rentalId);
+		return orderedAdditionalItems;
+	}
+	
 	
 	private void checkIfOrderedAdditionalItemIdExists(int id) {
 		OrderedAdditionalItem orderedAdditionalItem = this.orderedAdditionalItemRepository.findById(id);
@@ -124,21 +145,26 @@ public class OrderedAdditionalItemManager implements OrderedAdditionalItemServic
 		double totalPrice = 0;
 		int daysDifference = (int) ChronoUnit.DAYS.between(orderedAdditionalItem.getPickUpDate(), orderedAdditionalItem.getReturnDate());
 		totalPrice = price * daysDifference;
-		orderedAdditionalItem.setTotalDay(daysDifference);
 		return totalPrice;
 	}
 	
+	private int calculateTotalDays(OrderedAdditionalItem orderedAdditionalItem) {
+		int daysDifference = (int) ChronoUnit.DAYS.between(orderedAdditionalItem.getPickUpDate(), orderedAdditionalItem.getReturnDate());
+		return daysDifference;
+	}
+	
 	private void checkIfRentalIdExists(int rentalId) {
-		Rental rental = this.rentalRepository.findById(rentalId);
+		Rental rental = this.rentalService.getByRentalId(rentalId);
 		if(rental == null) {
-			throw new BusinessException("THERE.IS.NOT.RENTAL"); //İSMİ DÜZELT
+			throw new BusinessException("THERE.IS.NOT.RENTAL"); 
 		}
 	}
 	
 	private void checkIfAdditionalItemIdExists(int additionalItemId) {
-		AdditionalItem additionalItem = this.additionalItemRepository.findById(additionalItemId);
+		AdditionalItem additionalItem = this.additionalItemService.getByAdditionalItemId(additionalItemId);
 		if(additionalItem == null) {
-			throw new BusinessException("THERE.IS.NOT.ADDITIONAL.ITEM"); //İSMİ DÜZELT
+			throw new BusinessException("THERE.IS.NOT.ADDITIONAL.ITEM"); 
+
 		}
 	}
 	
@@ -147,6 +173,7 @@ public class OrderedAdditionalItemManager implements OrderedAdditionalItemServic
 			throw new BusinessException("DATE.ERROR"); 
 		}
 	}
+
 	
 
 }

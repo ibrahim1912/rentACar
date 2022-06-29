@@ -47,10 +47,10 @@ public class AdditionalItemManager implements AdditionalItemService {
 	}
 
 	@Override
-	public Result delete(DeleteAdditionalItemRequest deleteAdditionalFeatureItemRequest) {
-		checkIfAdditionalItemIdExists(deleteAdditionalFeatureItemRequest.getId());
+	public Result delete(DeleteAdditionalItemRequest deleteAdditionalItemRequest) {
+		checkIfAdditionalItemIdExists(deleteAdditionalItemRequest.getId());
 		
-		this.additionalItemRepository.deleteById(deleteAdditionalFeatureItemRequest.getId());
+		this.additionalItemRepository.deleteById(deleteAdditionalItemRequest.getId());
 		return new SuccessResult("ADDITIONAL.ITEM.DELETED");
 	}
 
@@ -73,6 +73,7 @@ public class AdditionalItemManager implements AdditionalItemService {
 		
 		return new SuccessDataResult<List<GetAllAdditionalItemsResponse>>(response,"ADDITIONAL.ITEMS.LISTED");
 	}
+	
 
 	@Override
 	public DataResult<GetAdditionalItemResponse> getById(int id) {
@@ -81,6 +82,13 @@ public class AdditionalItemManager implements AdditionalItemService {
 		AdditionalItem additionalItem = this.additionalItemRepository.findById(id);
 		GetAdditionalItemResponse  response = this.modelMapperService.forResponse().map(additionalItem, GetAdditionalItemResponse.class);
 		return new SuccessDataResult<GetAdditionalItemResponse>(response);
+	}
+	
+	@Override
+	public AdditionalItem getByAdditionalItemId(int additionalItemId) {
+		checkIfAdditionalItemIdExists(additionalItemId);
+		AdditionalItem additionalItem = this.additionalItemRepository.findById(additionalItemId);
+		return additionalItem;
 	}
 	
 	private void checkIfAdditionalItemIdExists(int id) {
@@ -96,6 +104,8 @@ public class AdditionalItemManager implements AdditionalItemService {
 			throw new BusinessException("ADDITIONAL.ITEM.NAME.EXISTS");
 		}
 	}
+
+	
 	
 	
 

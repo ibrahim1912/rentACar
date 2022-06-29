@@ -9,12 +9,15 @@ import com.kodlamaio.rentACar.business.responses.corporateCustomers.GetAllCorpor
 import com.kodlamaio.rentACar.business.responses.corporateCustomers.GetCorporateCustomerResponse;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
+import com.kodlamaio.rentACar.entities.concretes.CorporateCustomer;
 
 public interface CorporateCustomerService {
 
-	public Result add(CreateCorporateCustomerRequest corporateCustomerRequest);
-	public Result update(UpdateCorporateCustomerRequest updateCorporateCustomerRequest);
-	public Result delete(DeleteCorporateCustomerRequest deleteCorporateCustomerRequest);
-	public DataResult<List<GetAllCorporateCustomersResponse>> getAll();
-	public DataResult<GetCorporateCustomerResponse> getById(int id);
+	Result add(CreateCorporateCustomerRequest corporateCustomerRequest);
+	Result update(UpdateCorporateCustomerRequest updateCorporateCustomerRequest);
+	Result delete(DeleteCorporateCustomerRequest deleteCorporateCustomerRequest);
+	DataResult<List<GetAllCorporateCustomersResponse>> getAll();
+	DataResult<GetCorporateCustomerResponse> getById(int id);
+	
+	CorporateCustomer getByCorporateCustomerId(int corporateCustomerId);
 }

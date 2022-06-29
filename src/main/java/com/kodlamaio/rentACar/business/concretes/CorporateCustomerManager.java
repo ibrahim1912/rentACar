@@ -10,9 +10,6 @@ import com.kodlamaio.rentACar.business.abstracts.CorporateCustomerService;
 import com.kodlamaio.rentACar.business.requests.corporateCustomers.CreateCorporateCustomerRequest;
 import com.kodlamaio.rentACar.business.requests.corporateCustomers.DeleteCorporateCustomerRequest;
 import com.kodlamaio.rentACar.business.requests.corporateCustomers.UpdateCorporateCustomerRequest;
-import com.kodlamaio.rentACar.business.requests.individualCustomers.CreateIndividualCustomerRequest;
-import com.kodlamaio.rentACar.business.requests.individualCustomers.DeleteIndividualCustomerRequest;
-import com.kodlamaio.rentACar.business.requests.individualCustomers.UpdateIndividualCustomerRequest;
 import com.kodlamaio.rentACar.business.responses.corporateCustomers.GetAllCorporateCustomersResponse;
 import com.kodlamaio.rentACar.business.responses.corporateCustomers.GetCorporateCustomerResponse;
 import com.kodlamaio.rentACar.core.utilities.exceptions.BusinessException;
@@ -83,6 +80,14 @@ public class CorporateCustomerManager implements CorporateCustomerService {
 		GetCorporateCustomerResponse response = this.modelMapperService.forResponse().map(corporateCustomer, GetCorporateCustomerResponse.class);
 		return new SuccessDataResult<GetCorporateCustomerResponse>(response);
 	}
+	
+	@Override
+	public CorporateCustomer getByCorporateCustomerId(int corporateCustomerId) {
+		checkIfCorporateCustomerIdExists(corporateCustomerId);
+		
+		CorporateCustomer corporateCustomer = this.corporateCustomerRepository.findByCorporateCustomerId(corporateCustomerId);
+		return corporateCustomer;
+	}
 
 	private void checkIfCorporateCustomerIdExists(int id) {
 		CorporateCustomer corporateCustomer = this.corporateCustomerRepository.findByCorporateCustomerId(id);
@@ -97,5 +102,7 @@ public class CorporateCustomerManager implements CorporateCustomerService {
 			throw new BusinessException("COMPANY.NAME.EXISTS");
 		}
 	}
+
+	
 
 }

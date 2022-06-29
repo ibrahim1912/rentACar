@@ -10,13 +10,16 @@ import com.kodlamaio.rentACar.business.responses.individualCustomers.GetAllIndiv
 import com.kodlamaio.rentACar.business.responses.individualCustomers.GetIndividualCustomerResponse;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
+import com.kodlamaio.rentACar.entities.concretes.IndividualCustomer;
 
 public interface IndividualCustomerService {
 
-	public Result add(CreateIndividualCustomerRequest createIndividualCustomerRequest) throws NumberFormatException, RemoteException;
-	public Result delete(DeleteIndividualCustomerRequest deleteIndividualCustomerRequest);
-	public Result update(UpdateIndividualCustomerRequest updateIndividualCustomerRequest) throws NumberFormatException, RemoteException;
-	public DataResult<List<GetAllIndividualCustomersResponse>> getAll();
-	public DataResult<GetIndividualCustomerResponse> getById(int id);
+	Result add (CreateIndividualCustomerRequest createIndividualCustomerRequest) throws NumberFormatException, RemoteException;
+	Result delete (DeleteIndividualCustomerRequest deleteIndividualCustomerRequest);
+	Result update(UpdateIndividualCustomerRequest updateIndividualCustomerRequest) throws NumberFormatException, RemoteException;
+	DataResult<List<GetAllIndividualCustomersResponse>> getAll();
+	DataResult<GetIndividualCustomerResponse> getById(int id);
 	DataResult<List<GetAllIndividualCustomersResponse>> getAll(Integer pageNo, Integer pageSize);
+	
+	IndividualCustomer getByIndividualCustomerId(int individualCustomerId);
 }

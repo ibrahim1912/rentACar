@@ -15,13 +15,16 @@ import com.kodlamaio.rentACar.entities.concretes.Rental;
 
 public interface RentalService {
 
-	Result addForIndividualCustomers(CreateRentalRequest createRentalRequest);
-	Result addForCorporateCustomers(CreateRentalRequest createRentalRequest);
-	Result update(UpdateRentalRequest updateRentalRequest);
+	Result addForIndividualCustomer(CreateRentalRequest createRentalRequest);
+	Result addForCorporateCustomer(CreateRentalRequest createRentalRequest);
+	Result updateForIndividualCustomer(UpdateRentalRequest updateRentalRequest);
+	Result updateForCorporateCustomer(UpdateRentalRequest updateRentalRequest);
 	Result delete(DeleteRentalRequest deleteRentalRequest);
 	
 	DataResult<List<GetAllRentalsResponse>> getAll();
 	DataResult<GetRentalResponse> getById(int id);
+	
+	public Rental getByRentalId(int rentalId);
 	
 	
 	

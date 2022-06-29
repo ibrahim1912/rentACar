@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.kodlamaio.rentACar.business.abstracts.CarService;
 import com.kodlamaio.rentACar.business.abstracts.MaintenanceService;
 import com.kodlamaio.rentACar.business.requests.maintenances.CreateMaintenanceRequest;
 import com.kodlamaio.rentACar.business.requests.maintenances.DeleteMaintenanceRequest;
@@ -27,15 +29,15 @@ import com.kodlamaio.rentACar.entities.concretes.Maintenance;
 public class MaintenanceManager implements MaintenanceService {
 
 	private MaintenanceRepository maintenanceRepository;
-	private CarRepository carRepository;
+	private CarService carService;
 	private ModelMapperService modelMapperService;
 
 	@Autowired
-	public MaintenanceManager(MaintenanceRepository maintenanceRepository, CarRepository carRepository,
+	public MaintenanceManager(MaintenanceRepository maintenanceRepository, CarService carService,
 			ModelMapperService modelMapperService) {
 
 		this.maintenanceRepository = maintenanceRepository;
-		this.carRepository = carRepository;
+		this.carService = carService;
 		this.modelMapperService = modelMapperService;
 	}
 
@@ -50,7 +52,7 @@ public class MaintenanceManager implements MaintenanceService {
 		Maintenance maintenance = this.modelMapperService.forResponse().map(createMaintenanceRequest,
 				Maintenance.class);
 
-		Car car = this.carRepository.findById(createMaintenanceRequest.getCarId());
+		Car car = this.carService.getByCarId(createMaintenanceRequest.getCarId());
 		car.setState(2);
 
 		this.maintenanceRepository.save(maintenance);
@@ -97,36 +99,31 @@ public class MaintenanceManager implements MaintenanceService {
 		return new SuccessDataResult<GetMaintenanceResponse>(response);
 	}
 
-	@Override
-	public Result updateState(UpdateMaintenanceRequest updateMaintenanceRequest) {
-		checkIfCarIdIsExists(updateMaintenanceRequest.getCarId());
-
-		Car car = this.carRepository.findById(updateMaintenanceRequest.getCarId());
-		if (car.getState() == 1) {
-			car.setState(2);
-		} else {
-			car.setState(1);
-		}
-		this.carRepository.save(car);
-		return new SuccessResult();
-	}
+	
 
 	private void checkIfCarIsMaintenance(int carId) {
-		Car car = this.carRepository.findById(carId);
+		Car car = this.carService.getByCarId(carId);
 		if (car.getState() == 2) {
-			throw new BusinessException("CAR.IS.MAINTENANCED");
+			throw new BusinessException("CAR.HAS.ALREADY.BEEN.MAINTENANCED");
 		}
 	}
 
 	private void checkIfCarIsRented(int carId) {
-		Car car = this.carRepository.findById(carId);
+		Car car = this.carService.getByCarId(carId);
 		if (car.getState() == 3) {
-			throw new BusinessException("CAR.IS.RENTED");
+			throw new BusinessException("CAR.HAS.ALREADY.BEEN.RENTED");
+		}
+	}
+	
+	private void checkCarState(int carId) {
+		Car car = this.carService.getByCarId(carId);
+		if (car.getState() != 1) {
+			throw new BusinessException("CAR.IS.NOT.AVAILABLE");
 		}
 	}
 
 	private void checkIfCarIdIsExists(int carId) {
-		Car car = this.carRepository.findById(carId);
+		Car car = this.carService.getByCarId(carId);
 		if (car == null) {
 			throw new BusinessException("THERE.IS.NOT.CAR");
 		}
@@ -145,15 +142,29 @@ public class MaintenanceManager implements MaintenanceService {
 		}
 	}
 	
+	private void changeState(UpdateMaintenanceRequest updateMaintenanceRequest) {
+		Car car = this.carService.getByCarId(updateMaintenanceRequest.getCarId());
+		if (car.getState() == 1) {
+			car.setState(2);
+		} else {
+			car.setState(1);
+		}
+	}
+	
 	private void checkCarChangeInUpdate(UpdateMaintenanceRequest updateMaintenanceRequest) {
 		Maintenance maintenance = this.maintenanceRepository.findById(updateMaintenanceRequest.getId());
 		Car oldCar = maintenance.getCar(); //burdaki car eski
 		
 		if(updateMaintenanceRequest.getCarId() != oldCar.getId()) {
+			checkCarState(updateMaintenanceRequest.getCarId());
 			oldCar.setState(1);
-			updateState(updateMaintenanceRequest);
+			changeState(updateMaintenanceRequest);
 		}
 	}
 	
+	@Override
+	public Result updateState(UpdateMaintenanceRequest updateMaintenanceRequest) {
+		return null;
+	}
 
 }

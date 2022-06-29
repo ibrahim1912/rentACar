@@ -110,6 +110,15 @@ public class IndividualCustomerManager implements IndividualCustomerService {
 				.collect(Collectors.toList());
 		return new SuccessDataResult<List<GetAllIndividualCustomersResponse>>(response);
 	}
+	
+	@Override
+	public IndividualCustomer getByIndividualCustomerId(int individualCustomerId) {
+		checkIfIndividualCustomerIdExists(individualCustomerId);
+		
+		IndividualCustomer individualCustomer = this.individualCustomerRepository.findByIndividualCustomerId(individualCustomerId);
+		return individualCustomer;
+		
+	}
 
 	private void checkIfRealPerson(CreateIndividualCustomerRequest createIndividualCustomerRequest)
 			throws NumberFormatException, RemoteException {
@@ -161,5 +170,7 @@ public class IndividualCustomerManager implements IndividualCustomerService {
 			checkIfIdentityIsSame(identiy);
 		}
 	}
+
+
 
 }
