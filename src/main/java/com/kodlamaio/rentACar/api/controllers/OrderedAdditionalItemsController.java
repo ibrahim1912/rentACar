@@ -14,7 +14,7 @@ import com.kodlamaio.rentACar.business.abstracts.OrderedAdditionalItemService;
 import com.kodlamaio.rentACar.business.requests.orderedAdditionalItems.CreateOrderedAdditionalItemRequest;
 import com.kodlamaio.rentACar.business.requests.orderedAdditionalItems.DeleteOrderedAdditionalItemRequest;
 import com.kodlamaio.rentACar.business.requests.orderedAdditionalItems.UpdateOrderedAdditionalItemRequest;
-import com.kodlamaio.rentACar.business.responses.orderedAdditionalItems.GetOrderedAdditionalItemsResponse;
+import com.kodlamaio.rentACar.business.responses.orderedAdditionalItems.GetOrderedAdditionalItemResponse;
 import com.kodlamaio.rentACar.business.responses.orderedAdditionalItems.GetAllOrderedAdditionalItemsResponse;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
@@ -51,7 +51,7 @@ public class OrderedAdditionalItemsController {
 	}
 	
 	@GetMapping("/getbyid")
-	public DataResult<GetOrderedAdditionalItemsResponse> getById(@RequestParam int id){
+	public DataResult<GetOrderedAdditionalItemResponse> getById(@RequestParam int id){
 		return this.orderedAdditionalItemService.getById(id);
 	}
 }
