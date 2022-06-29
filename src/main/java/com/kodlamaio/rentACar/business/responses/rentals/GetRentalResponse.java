@@ -22,4 +22,5 @@ public class GetRentalResponse {
 	private int pickUpCityId;
 	private int returnCityId;
 	private String customer;
+	private int birthDate;
 }
