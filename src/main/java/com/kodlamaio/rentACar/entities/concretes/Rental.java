@@ -57,7 +57,7 @@ public class Rental {
 	private City returnCityId;
 	
 	@OneToMany(mappedBy = "rental")
-	private List<OrderedAdditionalItem> additionalFeatureServices;
+	private List<OrderedAdditionalItem> orderedAdditionalItems;
 	
 	@ManyToOne
 	@JoinColumn(name = "customer_id")
