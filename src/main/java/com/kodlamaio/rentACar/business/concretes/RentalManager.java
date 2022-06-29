@@ -30,6 +30,7 @@ import com.kodlamaio.rentACar.dataAccess.abstracts.RentalRepository;
 import com.kodlamaio.rentACar.entities.concretes.Car;
 import com.kodlamaio.rentACar.entities.concretes.CorporateCustomer;
 import com.kodlamaio.rentACar.entities.concretes.IndividualCustomer;
+import com.kodlamaio.rentACar.entities.concretes.OrderedAdditionalItem;
 import com.kodlamaio.rentACar.entities.concretes.Rental;
 
 @Service
@@ -61,7 +62,7 @@ public class RentalManager implements RentalService {
 	@Override
 	public Result addForIndividualCustomer(CreateRentalRequest createRentalRequest) {
 		
-		checkIfCarIdExists(createRentalRequest.getCarId());
+		//checkIfCarIdExists(createRentalRequest.getCarId());
 		checkIfIndividualPersonExists(createRentalRequest.getCustomerId());
 		checkIfCarStateIsAvailable(createRentalRequest.getCarId());
 		checkIfDatesAreCorrect(createRentalRequest.getPickUpDate(), createRentalRequest.getReturnDate());
@@ -71,6 +72,7 @@ public class RentalManager implements RentalService {
 		Rental rental = this.modelMapperService.forRequest().map(createRentalRequest, Rental.class);
 		car.setState(3); //araba kiralanmış
 		rental.setTotalPrice(calculateTotalPriceOfRental(rental, car.getDailyPrice()));
+		rental.setTotalDays(calculateTotalDaysOfRental(rental));
 		this.rentalRepository.save(rental);
 		return new SuccessResult("CAR.RENTED");
 	}
@@ -86,6 +88,7 @@ public class RentalManager implements RentalService {
 		Rental rental = this.modelMapperService.forRequest().map(createRentalRequest, Rental.class);
 		car.setState(3); //araba kiralanmış
 		rental.setTotalPrice(calculateTotalPriceOfRental(rental, car.getDailyPrice()));
+		rental.setTotalDays(calculateTotalDaysOfRental(rental));
 		this.rentalRepository.save(rental);
 		return new SuccessResult("CAR.RENTED");
 	}
@@ -112,13 +115,14 @@ public class RentalManager implements RentalService {
 	@Override
 	public Result updateForIndividualCustomer(UpdateRentalRequest updateRentalRequest) {
 		checkIfRentalIdExists(updateRentalRequest.getId());
-		checkIfCarIdExists(updateRentalRequest.getCarId());
+		//checkIfCarIdExists(updateRentalRequest.getCarId());
 		checkIfIndividualPersonExists(updateRentalRequest.getCustomerId());
 		checkCarChangeInUpdate(updateRentalRequest);
 		
 		Rental rental = this.modelMapperService.forRequest().map(updateRentalRequest, Rental.class);
 		Car car = this.carService.getByCarId(updateRentalRequest.getCarId());
 		rental.setTotalPrice(calculateTotalPriceOfRental(rental, car.getDailyPrice()));
+		rental.setTotalDays(calculateTotalDaysOfRental(rental));
 		this.rentalRepository.save(rental);
 		return new SuccessResult("RENTED.UPDATED");
 	}
@@ -126,13 +130,14 @@ public class RentalManager implements RentalService {
 	@Override
 	public Result updateForCorporateCustomer(UpdateRentalRequest updateRentalRequest) {
 		checkIfRentalIdExists(updateRentalRequest.getId());
-		checkIfCarIdExists(updateRentalRequest.getCarId());
+		//checkIfCarIdExists(updateRentalRequest.getCarId());
 		checkIfCorporateCustomerIdExists(updateRentalRequest.getCustomerId());
 		checkCarChangeInUpdate(updateRentalRequest);
 		
 		Rental rental = this.modelMapperService.forRequest().map(updateRentalRequest, Rental.class);
 		Car car = this.carService.getByCarId(updateRentalRequest.getCarId());
 		rental.setTotalPrice(calculateTotalPriceOfRental(rental, car.getDailyPrice()));
+		rental.setTotalDays(calculateTotalDaysOfRental(rental));
 		this.rentalRepository.save(rental);
 		return new SuccessResult("RENTED.UPDATED");
 	}
@@ -171,8 +176,12 @@ public class RentalManager implements RentalService {
 		int daysDifference = (int) ChronoUnit.DAYS.between(rental.getPickUpDate(), rental.getReturnDate());
 		totalPrice = (carDailyPrice * daysDifference) +  
 				+ calculatePriceByReturnLocation(rental.getPickUpCityId().getId(), rental.getReturnCityId().getId());
-		rental.setTotalDays(daysDifference);
 		return totalPrice;
+	}
+	
+	private int calculateTotalDaysOfRental(Rental rental) {
+		int daysDifference = (int) ChronoUnit.DAYS.between(rental.getPickUpDate(), rental.getReturnDate());
+		return daysDifference;
 	}
 
 	private double calculatePriceByReturnLocation(int pickUpLocationId, int returnLocationId) {
@@ -191,7 +200,6 @@ public class RentalManager implements RentalService {
 	}
 	
 	private void checkUserFindexScoreAndCarFindexScore(int carId, int individualId) {
-		checkIfIndividualPersonExists(individualId);
 		
 		Car car = this.carService.getByCarId(carId);
 		IndividualCustomer individualCustomer = this.individualCustomerService.getByIndividualCustomerId(individualId);
@@ -243,8 +251,6 @@ public class RentalManager implements RentalService {
 			throw new BusinessException("CAR.IS.NOT.AVAILABLE");
 		}
 	}
-
-
 
 }
 
