@@ -9,13 +9,16 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetOrderedAdditionalItemResponse {
+public class GetAllOrderedAdditionalItemsResponse  {
+
 	private int id;
 	private int rentalId;
 	private String additionalItemName;
-	private int additionaLIemId;
+	private int additionalItemId;
 	private double additionalItemPrice;
+	private double totalPrice;
+	private int totalDay;
+	private String userFirstName;
 	private LocalDate pickUpDate;
 	private LocalDate returnDate;
-	
 }

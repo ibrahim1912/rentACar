@@ -14,7 +14,7 @@ public class GetInvoiceResponse {
 	private int rentalId;
 	private String carKilometer;
 	private double totalPrice;
-	private String userFirstName;
+	private String customer;
 	private LocalDate rentalPickUpDate;
 	private LocalDate rentalReturnDate;
 	private String brandName;
