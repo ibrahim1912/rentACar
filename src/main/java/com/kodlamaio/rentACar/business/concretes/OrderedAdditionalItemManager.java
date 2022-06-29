@@ -15,7 +15,7 @@ import com.kodlamaio.rentACar.business.requests.orderedAdditionalItems.CreateOrd
 import com.kodlamaio.rentACar.business.requests.orderedAdditionalItems.DeleteOrderedAdditionalItemRequest;
 import com.kodlamaio.rentACar.business.requests.orderedAdditionalItems.UpdateOrderedAdditionalItemRequest;
 import com.kodlamaio.rentACar.business.responses.orderedAdditionalItems.GetAllOrderedAdditionalItemsResponse;
-import com.kodlamaio.rentACar.business.responses.orderedAdditionalItems.GetOrderedAdditionalItemsResponse;
+import com.kodlamaio.rentACar.business.responses.orderedAdditionalItems.GetOrderedAdditionalItemResponse;
 import com.kodlamaio.rentACar.core.utilities.exceptions.BusinessException;
 import com.kodlamaio.rentACar.core.utilities.mapping.ModelMapperService;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
@@ -110,13 +110,13 @@ public class OrderedAdditionalItemManager implements OrderedAdditionalItemServic
 	}
 
 	@Override
-	public DataResult<GetOrderedAdditionalItemsResponse> getById(int id) {
+	public DataResult<GetOrderedAdditionalItemResponse> getById(int id) {
 		checkIfOrderedAdditionalItemIdExists(id);
 		
 		OrderedAdditionalItem orderedAdditionalItem = this.orderedAdditionalItemRepository.findById(id);
-		GetOrderedAdditionalItemsResponse response = this.modelMapperService.forResponse()
-				.map(orderedAdditionalItem, GetOrderedAdditionalItemsResponse.class);
-		return new SuccessDataResult<GetOrderedAdditionalItemsResponse>(response);
+		GetOrderedAdditionalItemResponse response = this.modelMapperService.forResponse()
+				.map(orderedAdditionalItem, GetOrderedAdditionalItemResponse.class);
+		return new SuccessDataResult<GetOrderedAdditionalItemResponse>(response);
 	}
 	
 	@Override
@@ -129,7 +129,7 @@ public class OrderedAdditionalItemManager implements OrderedAdditionalItemServic
 	@Override
 	public List<OrderedAdditionalItem> getByRentalId(int rentalId) {
 		checkIfRentalIdExists(rentalId);
-		List<OrderedAdditionalItem> orderedAdditionalItems = this.getByRentalId(rentalId);
+		List<OrderedAdditionalItem> orderedAdditionalItems = this.orderedAdditionalItemRepository.findByRentalId(rentalId);
 		return orderedAdditionalItems;
 	}
 	
