@@ -31,25 +31,44 @@ public class AddressesController {
 		this.addressService = addressService;
 	}
 
-	@PostMapping("/add")
-	public Result add(@RequestBody CreateAddressRequest createAddressRequest) {
-		return this.addressService.add(createAddressRequest);
+	@PostMapping("/addforindividualcustomer")
+	public Result addForIndividualCustomer(@RequestBody CreateAddressRequest createAddressRequest) {
+		return this.addressService.addForIndividualCustomer(createAddressRequest);
 	}
 	
-	
-	@PostMapping("/addinvoiceaddressifdifferent")
-	public Result addInvoiceAddressIfDifferent(@RequestBody CreateAddressRequest createAddressRequest) {
-		return this.addressService.addInvoiceAddressIfDifferent(createAddressRequest);
+	@PostMapping("/addforcorporatecustomer")
+	public Result addForCorporateCustomer(@RequestBody CreateAddressRequest createAddressRequest) {
+		return this.addressService.addForCorporateCustomer(createAddressRequest);
 	}
 	
-	@PostMapping("/update")
-	public Result update(@RequestBody UpdateAddressRequest updateAddressRequest) {
-		return this.addressService.update(updateAddressRequest);
+	@PostMapping("/addinvoiceaddressifdifferentforindividualcustomer")
+	public Result addInvoiceAddressIfDifferentForIndividualCustomer(@RequestBody CreateAddressRequest createAddressRequest) {
+		return this.addressService.addInvoiceAddressIfDifferentForIndividualCustomer(createAddressRequest);
 	}
 	
-	@PostMapping("/updateifbotharesame")
-	public Result updateIfBothAreSame(@RequestBody UpdateAddressRequest updateAddressRequest) {
-		return this.addressService.updateIfBothAreSame(updateAddressRequest);
+	@PostMapping("/addinvoiceaddressifdifferentforcorporatecustomer")
+	public Result addInvoiceAddressIfDifferentForCorporateCustomer(@RequestBody CreateAddressRequest createAddressRequest) {
+		return this.addressService.addInvoiceAddressIfDifferentForCorporateCustomer(createAddressRequest);
+	}
+	
+	@PostMapping("/updateforindividualcustomer")
+	public Result updateForIndividualCustomer(@RequestBody UpdateAddressRequest updateAddressRequest) {
+		return this.addressService.updateForIndividualCustomer(updateAddressRequest);
+	}
+	
+	@PostMapping("/updateforcorporatecustomer")
+	public Result updateForCorporateCustomer(@RequestBody UpdateAddressRequest updateAddressRequest) {
+		return this.addressService.updateForCorporateCustomer(updateAddressRequest);
+	}
+	
+	@PostMapping("/updateifbotharesameforindividualcustomer")
+	public Result updateIfBothAreSameForIndividualCustomer(@RequestBody UpdateAddressRequest updateAddressRequest) {
+		return this.addressService.updateIfBothAreSameForIndividualCustomer(updateAddressRequest);
+	}
+	
+	@PostMapping("/updateifbotharesameforcorporatecustomer")
+	public Result updateIfBothAreSameForCorporateCustomer(@RequestBody UpdateAddressRequest updateAddressRequest) {
+		return this.addressService.updateIfBothAreSameForCorporateCustomer(updateAddressRequest);
 	}
 	
 	
