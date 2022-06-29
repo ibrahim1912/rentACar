@@ -27,8 +27,8 @@ public class GetAllRentalsResponse {
 	private int customerId;
 	private String email;
 	private String customer;
+	private String identiyNumber;
 	
 
-	
 
 }
