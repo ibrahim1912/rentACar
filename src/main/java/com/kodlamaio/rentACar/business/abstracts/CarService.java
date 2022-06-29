@@ -30,7 +30,7 @@ public interface CarService {
 	DataResult<List<GetAllCarsResponse>> getByBrandAndColorName(String brandName,String colorName);
 	DataResult<List<GetAllCarsResponse>> getDailyPriceGreaterThan(double dailyPrice);
 	
-	public Car getByCarId(int carId);
+	Car getByCarId(int carId);
 	
 	
 }
