@@ -27,6 +27,7 @@ import com.kodlamaio.rentACar.dataAccess.abstracts.CarRepository;
 import com.kodlamaio.rentACar.dataAccess.abstracts.ColorRepository;
 import com.kodlamaio.rentACar.entities.concretes.Brand;
 import com.kodlamaio.rentACar.entities.concretes.Car;
+import com.kodlamaio.rentACar.entities.concretes.City;
 import com.kodlamaio.rentACar.entities.concretes.Color;
 import com.kodlamaio.rentACar.entities.concretes.Rental;
 
@@ -56,12 +57,28 @@ public class CarManager implements CarService {
 		checkIfColorIdExists(createCarRequest.getColorId());
 		checkIfCarPlateIsExists(createCarRequest.getPlate());
 		
-		Car car = this.modelMapperService.forRequest().map(createCarRequest, Car.class);
+		//Car car = this.modelMapperService.forRequest().map(createCarRequest, Car.class);
+		
+		Brand brand = Brand.builder().id(createCarRequest.getBrandId()).build();
+		Color color = Color.builder().id(createCarRequest.getColorId()).build();
+		City city = City.builder().id(createCarRequest.getCityId()).build();
+		Car car = Car.builder().dailyPrice(createCarRequest.getDailyPrice())
+				.description(createCarRequest.getDescription())
+				.kilometer(createCarRequest.getKilometer())
+				.plate(createCarRequest.getPlate())
+				.minFindeksScore(createCarRequest.getMinFindeksScore())
+				.color(this.colorService.getByColorId(createCarRequest.getColorId()))
+				.brand(this.brandService.getByBrandId(createCarRequest.getBrandId()))
+				.city(city)
+				.build();
+	
+		
 		car.setState(1);
 		this.carRepository.save(car);
 		return new SuccessResult("CAR.ADDED");
 
 	}
+	
 
 	@Override
 	public DataResult<List<GetAllCarsResponse>> getAll() {
