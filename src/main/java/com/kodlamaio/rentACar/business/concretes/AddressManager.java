@@ -32,18 +32,16 @@ public class AddressManager implements AddressService {
 
 	private AddressRepository addressRepository;
 	private ModelMapperService modelMapperService;
-	private CustomerRepository customerRepository;
 	private IndividualCustomerService individualCustomerService;
 	private CorporateCustomerService corporateCustomerService;
 
 	@Autowired
 	public AddressManager(AddressRepository addressRepository, ModelMapperService modelMapperService,
-			CustomerRepository customerRepository, IndividualCustomerService individualCustomerService,
+			IndividualCustomerService individualCustomerService,
 			CorporateCustomerService corporateCustomerService) {
 
 		this.addressRepository = addressRepository;
 		this.modelMapperService = modelMapperService;
-		this.customerRepository = customerRepository;
 		this.individualCustomerService = individualCustomerService;
 		this.corporateCustomerService = corporateCustomerService;
 	}
