@@ -79,7 +79,7 @@ public class RentalManager implements RentalService {
 	
 	@Override
 	public Result addForCorporateCustomer(CreateRentalRequest createRentalRequest) {
-		checkIfCarIdExists(createRentalRequest.getCarId());
+		//checkIfCarIdExists(createRentalRequest.getCarId());
 		checkIfCorporateCustomerIdExists(createRentalRequest.getCustomerId());
 		checkIfCarStateIsAvailable(createRentalRequest.getCarId());
 		checkIfDatesAreCorrect(createRentalRequest.getPickUpDate(), createRentalRequest.getReturnDate());

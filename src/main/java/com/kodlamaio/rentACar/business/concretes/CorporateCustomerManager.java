@@ -40,6 +40,11 @@ public class CorporateCustomerManager implements CorporateCustomerService {
 	public Result add(CreateCorporateCustomerRequest createCorporateCustomerRequest) {
 		checkIfCompanyNameIsSame(createCorporateCustomerRequest.getCompanyName());
 		
+		
+//		CorporateCustomer corporateCustomer = CorporateCustomer.builder()
+//				.companyName(createCorporateCustomerRequest.getCompanyName())
+//				.taxNumber(createCorporateCustomerRequest.getTaxNumber())
+//				.build();
 		CorporateCustomer corporateCustomer = this.modelMapperService.forRequest().map(createCorporateCustomerRequest,
 				CorporateCustomer.class);
 		this.corporateCustomerRepository.save(corporateCustomer);

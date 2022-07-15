@@ -47,7 +47,9 @@ public class IndividualCustomerManager implements IndividualCustomerService {
 		checkIfRealPerson(createIndividualCustomerRequest);
 		checkIfIdentityIsSame(createIndividualCustomerRequest.getIdentityNumber());
 		checkIfEmailIsSame(createIndividualCustomerRequest.getEmail());
-
+		
+	
+				
 		IndividualCustomer individualCustomer = this.modelMapperService.forRequest()
 				.map(createIndividualCustomerRequest, IndividualCustomer.class);
 		
