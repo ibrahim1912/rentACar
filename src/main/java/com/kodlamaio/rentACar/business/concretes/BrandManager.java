@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.kodlamaio.rentACar.business.abstracts.BrandService;
@@ -53,12 +54,18 @@ public class BrandManager implements BrandService {
 		return new SuccessDataResult<GetBrandResponse>(response, "BRAND.LISTED");
 	}
 
+	@Cacheable("brands")
 	@Override
 	public DataResult<List<GetAllBrandsResponse>> getAll() {
 		List<Brand> brands = this.brandRepository.findAll();
 		List<GetAllBrandsResponse> response = brands.stream()
 				.map(brand -> this.modelMapperService.forResponse().map(brand, GetAllBrandsResponse.class))
 				.collect(Collectors.toList());
+		try {
+			Thread.sleep(1000*4);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return new SuccessDataResult<List<GetAllBrandsResponse>>(response, "BRANDS.LISTED");
 	}
 
@@ -98,9 +105,9 @@ public class BrandManager implements BrandService {
 
 	private void checkIfBrandNameExists(String name) {
 		Brand brand = this.brandRepository.findByName(name);
-		if (brand != null) {
-			throw new BusinessException("BRAND.NAME.EXISTS");
-		}
+		if (brand != null) throw new BusinessException("BRAND.NAME.EXISTS");
+			
+		
 	}
 
 	
